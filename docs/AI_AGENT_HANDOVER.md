@@ -35,7 +35,7 @@ CLI `node calendar-factory.mjs [snapshot.json] [output-dir] [--week-index N]` ge
 
 `refresh-public-activity.mjs` exports `collect`, `assertDate`, `sourceRepo`; CLI takes `--username`, `--since`, `--output`. The collector only calls GitHub's public search and public owned default-branch commit endpoints. Optional `GITHUB_TOKEN` affects rate limits, not which data may be committed. Fails closed on incomplete API data.
 
-`preview.html` is a module-powered standalone local web page, **not** a GitHub Pages deployment. It defaults to the dated account fixture, with a switch to demo, clickable/keyboard week selection, a seven-day event ledger, theme, style, zoom and motion controls. It never calls GitHub live.
+`preview.html` is a module-powered standalone local web page, **not** a GitHub Pages deployment. It defaults to the scheduled public account snapshot, with historical and demo switches, clickable/keyboard week selection, a seven-day event ledger, theme, style, zoom and motion controls. It never calls GitHub live.
 
 `exports/`: 8 standard demo variants; 2 demo historical static scenes, selected weeks 48 and 45; 4 personal account stills, selected week 51. Read `scripts/verify-exports.mjs` for the canonical filename and input selection matrix. The static SVGs are deliberately usable as Markdown image embeds on GitHub.
 
@@ -47,7 +47,7 @@ The dated `fixtures/adityasreevatsak-public-activity.json` snapshot was gathered
 
 These are **not GitHub's official contribution totals**. PR opening/merging count separately, feature branches and some upstream contributions are missing, and GitHub search may omit other activity. The demo is sparse and **synthetic**. A blank public grid square means no observed input, not proven zero activity. Do not secretly supplement, estimate or adjust counts to make the artwork appear busier.
 
-The public snapshot is not a recurring job. Refreshing later changes the source timestamp and possibly the appropriate selected week. Review the new snapshot, update frozen README statistics, and regenerate all relevant images with explicit provenance.
+The separately authorised six-hour refresh is now active (`.github/workflows/refresh-activity.yml`). It updates `data/live-public-activity.json` and four `exports/live-*` SVGs without changing frozen fixtures. The selected week is the latest observed active week, including the current week. Failed runs publish nothing.
 
 ## Core engineering decisions
 
@@ -81,7 +81,7 @@ Preview at `http://localhost:8000/preview.html`. For a generic user, `node refre
 
 ## Verification state at migration
 
-Earlier source sessions executed **37 JavaScript regression scenarios in isolated JavaScript harnesses** and byte-compared 14 current SVG assets. This is meaningful but **not a substitute for native Node/Python/Windows/browser validation**. New offline CI and exact output checks have been added to the independent repo. GitHub Actions completed successfully on Ubuntu and Windows for migration commit `777b76b5d8273f2e408afd18548e3404ce58984c` (18 November 2026). Continue checking CI for any new commit rather than assuming subsequent work passes. A known accuracy boundary is that the calendar represents observed event units, not authoritative total contributions.
+Earlier source sessions executed **37 JavaScript regression scenarios in isolated JavaScript harnesses** and byte-compared 14 historical SVG assets; four additional account SVGs now update through scheduled automation. This is meaningful but **not a substitute for native Node/Python/Windows/browser validation**. New offline CI and exact output checks have been added to the independent repo. GitHub Actions completed successfully on Ubuntu and Windows for migration commit `777b76b5d8273f2e408afd18548e3404ce58984c` (18 November 2026). Continue checking CI for any new commit rather than assuming subsequent work passes. A known accuracy boundary is that the calendar represents observed event units, not authoritative total contributions.
 
 ## Workstream boundaries
 

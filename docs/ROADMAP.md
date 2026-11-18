@@ -26,7 +26,7 @@ Code Factory is an experimental concept with a working renderer, public capture 
 
 - [ ] Formalise public-only collection semantics, including API search caps and partial data warnings.
 - [ ] Add a reproducible, easy username-to-SVG workflow without background paid API calls.
-- [ ] Consider a safe local refresh CLI that can generate images without altering checked-in showcase data.
+- [x] Add a safe six-hour public account refresh producing four SVGs without altering frozen showcase data.
 - [ ] Keep private and employer-linked information out of public snapshots.
 - [ ] Distinguish public events from GitHub's own contribution totals in all designs and documentation.
 
@@ -47,9 +47,9 @@ No automatic GitHub profile edits, no private repository collection, no fake con
 
 - Source licence (e.g. MIT or Apache-2.0), which grants reuse rights.
 - Public release/tag strategy and repository distribution.
-- Any hosted preview, scheduled public refresh, image publication or profile integration.
+- Any hosted preview, additional scheduled account targets, new publication destinations or profile integration. The existing six-hour refresh is approved.
 - Deleting the old concept branch: draft PR #5 has already been closed as superseded, without merging. Retain the original branch until the owner explicitly authorises deletion.
 
 ## Definition of done for next milestone
 
-Native CI passes, both art directions remain calendar-linked and readable, all 14 SVGs reproduce, generic username refresh cannot expose private data, and documentation/agent instructions match the actual repository. Any unverified Windows or GitHub UI behaviour must be identified explicitly.
+Native CI passes, both art directions remain calendar-linked and readable, all 18 SVGs reproduce, generic username refresh cannot expose private data, and documentation/agent instructions match the actual repository. Any unverified Windows or GitHub UI behaviour must be identified explicitly.

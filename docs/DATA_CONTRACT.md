@@ -78,7 +78,9 @@ Do not store an access token in `user`, `provenance`, `coverage`, `repositories`
 ## Source fixture rules
 
 - `fixtures/demo-activity.json`: stable synthetic regression fixture. Do not silently change dates or counts, since tests and pinned gallery weeks depend on them.
-- `fixtures/adityasreevatsak-public-activity.json`: frozen historical **public** GitHub snapshot. New captures are not live replacements, and generic username output is ignored by default to avoid accidental publication.
+- `fixtures/adityasreevatsak-public-activity.json`: frozen historical **public** snapshot, unchanged by automation.
+- `data/live-public-activity.json`: approved six-hour refreshed **public** account snapshot used for four `exports/live-*-still.svg` images.
+- Other usernames' locally collected snapshots remain ignored by default. Never collect private activity.
 - The collector must keep `coverage` and `provenance` truthful. If GitHub pagination is incomplete, fail without writing anything.
 
 See `docs/ARCHITECTURE.md` for model derivation and `docs/DEVELOPMENT.md` for regeneration instructions.

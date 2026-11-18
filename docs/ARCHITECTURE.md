@@ -23,7 +23,7 @@ flowchart TD
   Browser --> SVG
 ```
 
-**Boundary A, GitHub:** public query results are external, untrusted, potentially incomplete and rate-limited. The collector must explicitly guard visibility, pagination, timing and token secrecy. Collection is never part of CI and must not overwrite a known-good snapshot after failure.
+**Boundary A, GitHub:** public query results are untrusted, incomplete and rate-limited. Offline CI remains read-only. A separate approved six-hour scheduled GitHub Actions workflow uses `contents: write` only to commit validated public snapshot and SVG outputs. Collection failure never overwrites a known-good snapshot.
 
 **Boundary B, JSON:** snapshot schema/version, UTC timestamps, repository identity, IDs, counts and labels are validated before drawing. An event is not assumed equivalent to a GitHub contributions-calendar increment.
 
@@ -34,7 +34,10 @@ flowchart TD
 - `calendar-factory.mjs`: main rendering engine and CLI.
 - `refresh-public-activity.mjs`: public REST collector with injectable `request` for offline mocks.
 - `preview.html`: static single-page UI loading the renderer as a browser module, with a source switch between local JSON fixtures.
-- `fixtures/`: source-backed public account snapshot plus deterministic synthetic test fixture.
+- `fixtures/`: frozen historical public and synthetic test fixtures.
+- `data/live-public-activity.json`: approved scheduled public account snapshot.
+- `scripts/generate-live.mjs` and `scripts/verify-live.mjs`: four live static SVGs derived deterministically from the current snapshot.
+- `.github/workflows/refresh-activity.yml`: public-only collection, validation and scoped publication every six hours.
 - `exports/`: the committed SVG deliverables. They are build outputs whose correctness is checked against the exact source renderer.
 - `tests/`: Node model, collector and Python XML integrity/legacy tests.
 - `scripts/verify-exports.mjs`: validates exact committed image reproduction cross-platform.
@@ -75,12 +78,13 @@ Never require a live GitHub token in the browser. Launch through a local HTTP se
 
 ## Asset matrix and provenance
 
-14 committed SVGs:
+18 committed SVGs:
 - Demo: 2 layouts × 2 themes × animated/still = 8
 - Two fixed alternate demo weeks: release week 48, inspection week 45
-- Personal public showcase: 2 layouts × 2 themes × still only = 4, pinned week 51
+- Frozen personal historical showcase: 2 layouts × 2 themes × still only = 4, pinned week 51
+- Live public account showcase: 2 layouts × 2 themes × still only = 4, selected latest observed active week
 
-`scripts/verify-exports.mjs` generates all 14 in memory from the corresponding committed fixture and compares exact content, normalising only CRLF/LF. `verify.ps1` additionally runs native test suites and checks independent CLI-produced files. Derived images must be regenerated whenever the renderer or fixtures change.
+`scripts/verify-exports.mjs` generates 14 historical assets in memory from the corresponding committed fixture and compares exact content, normalising only CRLF/LF. `verify.ps1` additionally runs native test suites and checks independent CLI-produced files. Derived images must be regenerated whenever the renderer or fixtures change.
 
 ## Performance model and constraints
 
