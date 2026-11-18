@@ -1,3 +1,4 @@
+import { enhanceFactorySvg } from "./factory-finish.mjs";
 // Browser-safe calendar renderer: Node-only imports are loaded on CLI execution.
 // Calendar-driven Code Factory. All event-derived machinery is selected-week only.
 // Counts represent units in a normalised event snapshot, NOT GitHub's official totals.
@@ -124,7 +125,7 @@ for(let k=1;k<=5;k++)v.push(rect(147+(k-1)*17,414,12,10,p.grid[k],2));
 v.push(txt(246,423,`1–${m.peakUnits||0} observed units/day · logarithmic scale`,9,p.muted));
 v.push(txt(1157,425,`${layout==="isometric"?"ISOMETRIC FOUNDRY":"PIXEL WORKS"} · SELECTED WEEK ONLY · NOT CI / DEPLOYMENT STATUS`,9,p.muted,'text-anchor="end"'));
 if(m.outside)v.push(`<desc id="outside">Excluded ${m.outside} records outside displayed date range or after snapshot time.</desc>`);
-v.push(`</svg>`);return v.join("\n")+"\n";}
+v.push(`</svg>`);return enhanceFactorySvg(v.join("\n")+"\n");}
 export {validSnapshot,calendarModel,selectedModel,dayMachines,calendarIntensity,render,TYPES};
 
 if (typeof process !== "undefined" && process.argv?.[1]) {

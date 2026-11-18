@@ -50,6 +50,10 @@ Each active workshop shows a slim, five-segment `data-load-level` indicator deri
 
 The activity legend states the observed daily unit range and the logarithmic nature of the scale. This is a meaningful visual correction, **not** an invitation to invent extra animation, commits or badges. Validate light and dark, pixel and isometric layouts using both the sparse synthetic fixture and the much denser public account fixture.
 
+## Working factory finish (visual pass 2)
+
+The factory now has five stage-specific original machinery details: forge vents, assembly joints, sealing press, inspection optics and dispatch crane. Five calibrated work lights reflect recorded per-machine units relative to the observed annual peak. Short working conveyors appear only for days with genuine recorded activity, never for idle or future days. Animated browser SVGs add rolling gears, belts and a pulsing selected-week power feed, with reduced-motion support. Still SVGs preserve the artwork without motion. The pure `factory-finish.mjs` transformer is deterministic, source-backed and used on all 18 reproducible exports.
+
 ## Interactivity and accessibility
 
 - The selected week is represented by one focusable calendar group, with `role="button"` and `aria-pressed` state.

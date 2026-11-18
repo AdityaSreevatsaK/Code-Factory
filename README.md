@@ -43,6 +43,10 @@ npm run verify:live
 
 These are **observed source-event units**, not GitHub's official contribution totals. See the [draft improvement PR](https://github.com/AdityaSreevatsaK/Code-Factory/pull/1) for the visual changes and verification status.
 
+### Working factory artwork (review branch)
+
+Each observed machine now has stage-specific details, calibrated work lights and a short conveyor for its active day. Browser animation adds moving gears, belts and electrical feeds. Static profile SVGs retain the detail without relying on animation; idle days remain idle.
+
 ## Automatic refresh
 
 - **Schedule:** 00:17, 06:17, 12:17 and 18:17 UTC, or manually from [Refresh public activity](https://github.com/AdityaSreevatsaK/Code-Factory/actions/workflows/refresh-activity.yml) using *Run workflow*.

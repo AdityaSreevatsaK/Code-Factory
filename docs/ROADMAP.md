@@ -16,7 +16,8 @@ Code Factory is an experimental concept with a working renderer, public capture 
 ## Phase 1 | Visual and usability quality
 
 - [ ] Evaluate dark/light pixel/isometric artwork on GitHub desktop and mobile.
-- [ ] Improve heatmap distinction between lower and higher observed counts.
+- [x] Improve heatmap distinction between lower and higher observed counts.
+- [x] Add source-backed stage machinery, active-only conveyors and reduced-motion-safe micro-animation.
 - [ ] Improve legibility under high-density activity and narrow mobile displays.
 - [ ] Support accessible exploration of hidden events beyond two stages per day.
 - [ ] Add visual screenshot regression tests that remain offline and deterministic.

@@ -38,7 +38,7 @@ for(const {name,input,options} of expected) {
   if(!actual.startsWith("<svg")||!actual.trimEnd().endsWith("</svg>")||actual.includes("<script")||actual.includes("<foreignObject")){
     throw Error("Unsafe or malformed SVG export: "+name);
   }
-  if(actual.length>150_000)throw Error("SVG exceeds size budget: "+name);
+  if(actual.length>180_000)throw Error("SVG exceeds size budget: "+name);
   if(name.includes("still")&&actual.includes("<animateMotion"))throw Error("Unexpected animation in still export: "+name);
   checked++;
 }

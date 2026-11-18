@@ -38,7 +38,7 @@ export function buildLiveAssets(snapshot,{expectedLogin}={}){
   for(const layout of LAYOUTS)for(const theme of THEMES){
     const name=`live-${layout}-${theme}-still.svg`;
     const svg=render(snapshot,{layout,theme,animated:false,selectedWeek:model.weekIndex});
-    if(svg.length>150_000||svg.includes("<animateMotion")||svg.includes("<script")||!svg.includes("PUBLIC GITHUB SNAPSHOT")){
+    if(svg.length>180_000||svg.includes("<animateMotion")||svg.includes("<script")||!svg.includes("PUBLIC GITHUB SNAPSHOT")){
       throw Error("Live SVG failed static-profile safety checks: "+name);
     }
     files.push({name,content:svg});
