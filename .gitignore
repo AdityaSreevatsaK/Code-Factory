@@ -20,3 +20,7 @@ legacy/exports-legacy/
 # The explicitly approved public account showcase is tracked.
 fixtures/*-public-activity.json
 !fixtures/adityasreevatsak-public-activity.json
+
+# Live public account is explicitly tracked; other locally collected users are not.
+data/*
+!data/live-public-activity.json
