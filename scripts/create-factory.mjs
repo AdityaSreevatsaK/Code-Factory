@@ -14,7 +14,7 @@ function assetBase(value){
  if(value===undefined)return null;
  let parsed;
  try{parsed=new URL(value);}catch{throw Error("Asset base URL must be an HTTPS URL");}
- if(parsed.protocol!=="https:"||!parsed.hostname||parsed.username||parsed.password||parsed.hash||parsed.search||/[()<>[]s]/.test(value)){
+ if(parsed.protocol!=="https:"||!parsed.hostname||parsed.username||parsed.password||parsed.hash||parsed.search||/[()<>\[\]\s]/.test(value)){
   throw Error("Asset base URL must be a plain HTTPS directory without credentials, query or fragments");
  }
  return parsed.href.replace(/\/$/,"");
