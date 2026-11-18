@@ -95,3 +95,63 @@ test("impossible PR merge timestamps fail closed",async()=>{
  };
  await assert.rejects(collect({request,now:date,since:"2026-11-01"}),/predates its opening/);
 });
+
+test("recovers a known public owned repository omitted from the account listing",async()=>{
+ const missing=user+"/was-public";
+ let verifiedAnonymously=false,scanned=false;
+ const request=async(route,options={})=>{
+   if(route==="/users/"+user+"/repos?type=owner&per_page=100&page=1")return [];
+   if(route==="/repos/"+missing){
+     assert.equal(options.publicOnly,true);
+     assert.equal(options.allowNotFound,true);
+     verifiedAnonymously=true;
+     return {full_name:missing,owner:{login:user},private:false,visibility:"public"};
+   }
+   if(route.startsWith("/repos/"+missing+"/commits?")){
+     assert.ok(verifiedAnonymously,"must confirm PUBLIC metadata before commits");
+     scanned=true;
+     return [{sha:"restored",author:{login:user},
+       commit:{committer:{date:"2026-11-16T17:00:00Z"}},
+       html_url:"https://github.com/"+missing+"/commit/restored"}];
+   }
+   return fakeRequest(route,options);
+ };
+ const snap=await collect({request,now:date,since:"2026-11-01",
+   previousPublicRepositories:[missing,missing,"foreign/external"]});
+ assert.ok(scanned);
+ assert.ok(snap.activity.some(e=>e.repo_full_name===missing&&e.kind==="commit"));
+ assert.equal(snap.coverage.commit_repo_scan.rechecked_public_repositories,1);
+ assert.equal(snap.coverage.commit_repo_scan.unavailable_previous_count,0);
+});
+test("never scans a previously public repository that is no longer public",async()=>{
+ const missing=user+"/now-private",seen=[];
+ const request=async(route,options={})=>{
+   seen.push(route);
+   if(route==="/users/"+user+"/repos?type=owner&per_page=100&page=1")return [];
+   if(route==="/repos/"+missing){
+     assert.equal(options.publicOnly,true);
+     return null; // Anonymous metadata request would return HTTP 404
+   }
+   return fakeRequest(route,options);
+ };
+ const snap=await collect({request,now:date,since:"2026-11-01",
+   previousPublicRepositories:[missing]});
+ assert.equal(snap.coverage.commit_repo_scan.unavailable_previous_count,1);
+ assert.ok(!seen.some(route=>route.includes(missing+"/commits")));
+ assert.ok(!snap.activity.some(e=>e.repo_full_name===missing));
+ assert.ok(!JSON.stringify(snap).includes(missing));
+});
+test("fails closed on public metadata verification failure",async()=>{
+ const missing=user+"/public-api-failure";
+ const request=async(route,options={})=>{
+   if(route==="/users/"+user+"/repos?type=owner&per_page=100&page=1")return [];
+   if(route==="/repos/"+missing)throw Error("public metadata rate limit");
+   return fakeRequest(route,options);
+ };
+ await assert.rejects(collect({request,now:date,since:"2026-11-01",
+   previousPublicRepositories:[missing]}),/rate limit/);
+});
+test("does not treat malformed known-repository hint arrays as trusted",async()=>{
+ await assert.rejects(collect({request:fakeRequest,now:date,since:"2026-11-01",
+   previousPublicRepositories:"bad"}),/Invalid previous/);
+});
