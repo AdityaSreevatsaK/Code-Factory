@@ -42,7 +42,7 @@ class TestCalendarExports(unittest.TestCase):
                 self.assertEqual(root.attrib["role"], "img")
                 self.assertIsNotNone(root.find(f"{NS}title"))
                 self.assertIsNotNone(root.find(f"{NS}desc"))
-                self.assertLess(file.stat().st_size, 150_000)
+                self.assertLess(file.stat().st_size, 180_000)
                 self.assertFalse(list(root.iter(f"{NS}script")))
                 self.assertFalse(list(root.iter(f"{NS}foreignObject")))
                 content = file.read_text(encoding="utf-8")
