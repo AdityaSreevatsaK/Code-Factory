@@ -42,4 +42,4 @@ for(const {name,input,options} of expected) {
   if(name.includes("still")&&actual.includes("<animateMotion"))throw Error("Unexpected animation in still export: "+name);
   checked++;
 }
-console.log("Verified "+checked+" reproducible and standalone Code Factory SVG exports.");
+console.log("Verified "+checked+" historical SVG exports.");
