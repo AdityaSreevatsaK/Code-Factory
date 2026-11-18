@@ -19,6 +19,9 @@ $factory = $repo
 $renderer = Join-Path $factory 'calendar-factory.mjs'
 $fixture = Join-Path $repo 'fixtures\demo-activity.json'
 $accountFixture = Join-Path $factory 'fixtures\adityasreevatsak-public-activity.json'
+$liveSnapshot = Join-Path $factory 'data\live-public-activity.json'
+$liveGenerator = Join-Path $factory 'scripts\generate-live.mjs'
+$liveVerifier = Join-Path $factory 'scripts\verify-live.mjs'
 $tests = Join-Path $factory 'tests'
 $exports = Join-Path $factory 'exports'
 
@@ -60,7 +63,7 @@ function Assert-SameContent {
 Push-Location $repo
 try {
     if ($Regenerate) {
-        Write-Host 'Regenerating all fourteen committed SVG exports...' -ForegroundColor Cyan
+        Write-Host 'Regenerating all eighteen committed SVG exports...' -ForegroundColor Cyan
         & node $renderer
         if ($LASTEXITCODE -ne 0) { throw 'Primary SVG regeneration failed.' }
         New-Item -Path $temporary -ItemType Directory -Force | Out-Null
@@ -78,6 +81,8 @@ try {
                 Copy-Item -LiteralPath (Join-Path $accountSource $basename) -Destination (Join-Path $exports "account-$basename") -Force
             }
         }
+        & node $liveGenerator $liveSnapshot $exports
+        if ($LASTEXITCODE -ne 0) { throw 'Live public SVG regeneration failed.' }
     }
 
     Write-Host 'Running Node.js regression tests...' -ForegroundColor Cyan
@@ -85,6 +90,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Node.js rendering regression tests failed.' }
     & node --test (Join-Path $tests 'test_public_refresh.mjs')
     if ($LASTEXITCODE -ne 0) { throw 'Node.js public collector regression tests failed.' }
+    & node --test (Join-Path $tests 'test_live_generation.mjs')
+    if ($LASTEXITCODE -ne 0) { throw 'Node.js live publication regression tests failed.' }
 
     Write-Host 'Running Python SVG integrity tests...' -ForegroundColor Cyan
     & python -m unittest discover -s $tests -v
@@ -120,7 +127,10 @@ try {
         }
     }
 
-    Write-Host 'Verified: native tests and all fourteen committed SVG exports match the renderer.' -ForegroundColor Green
+    & node $liveVerifier
+    if ($LASTEXITCODE -ne 0) { throw 'Latest public account SVGs do not match the committed snapshot.' }
+
+    Write-Host 'Verified: native tests and all eighteen SVG exports match their snapshots.' -ForegroundColor Green
 }
 finally {
     Pop-Location
