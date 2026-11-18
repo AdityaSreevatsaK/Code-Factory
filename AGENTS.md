@@ -33,18 +33,27 @@ Project owner: `AdityaSreevatsaK`. The user prefers British English, clear techn
 - `fixtures/*-public-activity.json` files for other usernames are ignored by default. Never override `.gitignore` to commit someone's snapshot without reviewing its public provenance.
 - Repository visibility is currently public; **no third-party reuse licence has been selected**. Do not add MIT/Apache/GPL or state that the code is licensed without the owner's decision.
 
+### Source coverage reconciliation
+
+When an auto-refreshed public snapshot loses a previously observed owned repository, do not silently treat its historical activity as zero. The collector may use a previous snapshot and the preserved public example as **repository name hints**, but each missing candidate must be verified against **unauthenticated, currently public GitHub repository metadata** before scanning it. If it is private, missing or ambiguous, do not query its commits or retain its records. Fail closed on public API errors and never invent activity. The historical snapshot itself remains immutable. See `docs/DATA_COVERAGE_AUDIT.md` and `npm run audit:coverage`.
+
+**Art correctness:** calendar intensity should adapt to the observed year's peak, with distinct low and high activity. The load meter in each daily lane, added stage detailing and conveyor motion must be derived from recorded units, not animation noise. Visual effects must not add production in idle or future lanes. When more than two repository-stage groups occur, display the two highest observed counts and disclose hidden activity. Verify all 18 deterministic SVG exports after any renderer modification.
+
 ## 4. File and interface contracts
 
 | Path | Public interface and purpose |
 | --- | --- |
+| `factory-finish.mjs` | Pure deterministic stage-specific original artwork, active-only conveyors and motion-safe SVG enhancement. No synthetic events. |
 | `calendar-factory.mjs` | Pure `validSnapshot(input)`, `calendarModel(input)`, `selectedModel(input, weekIndex)`, `dayMachines(day)`, `render(input,options)`, `TYPES` exports, plus a zero-dependency Node CLI |
+| `scripts/create-factory.mjs` | Generic username-to-SVG CLI: fetch public-only activity or load a public JSON snapshot, build four stills and copy-ready Markdown into an isolated directory. |
 | `refresh-public-activity.mjs` | `collect({request,now,since,login})`, `assertDate`, `sourceRepo`, and public GitHub REST refresh CLI |
-| `preview.html` | One-page ES module browser preview; imports renderer without invoking Node-only code. Sources are local `fixtures/` JSON files |
+| `preview.html` | One-page ES module browser preview, local public JSON file picker and still SVG download. No browser GitHub API credentials or uploads. |
 | `fixtures/demo-activity.json` | Isolated stable synthetic scenario, must always be labelled demo |
 | `fixtures/adityasreevatsak-public-activity.json` | Dated, incomplete but genuine public showcase data |
 | `exports/` | 18 SVGs: fourteen frozen historical/demo images plus four approved scheduled live images |
 | `data/live-public-activity.json` | Public-only auto-refreshed account input, separate from frozen fixtures |
 | `scripts/generate-live.mjs` and `scripts/verify-live.mjs` | Current-week generation and integrity checks |
+| `.github/workflows/generate-any-user.yml` | Manual forkable public-only workflow. Uploads standalone generated artifacts; never pushes commits or edits profiles. |
 | `.github/workflows/refresh-activity.yml` | Approved six-hour schedule, validates and commits five generated files only |
 | `tests/test_calendar_factory.mjs` | Node renderer/model regression |
 | `tests/test_public_refresh.mjs` | Mocked public GitHub API collector regression, must stay offline |
@@ -68,6 +77,7 @@ python -m unittest discover -s tests -v # Python >=3.11
 npm run verify:exports                   # 14 historical/demo images
 npm run verify:live                      # 4 auto-refreshed public account images
 node calendar-factory.mjs               # Regenerate 8 primary demo SVGs
+node scripts/create-factory.mjs --username octocat --output output/octocat
 python -m http.server 8000               # Open http://localhost:8000/preview.html
 ```
 
@@ -92,7 +102,7 @@ When preparing a public-facing change, check copyright, image licensing, depende
 
 - Verify the migrated root-layout project in native Node and Python, plus Chrome/Edge desktop and mobile.
 - Improve readability for high-density days and heatmap intensity while keeping source-backed activity distinct from GitHub official contribution totals.
-- Add a generic username/refresh workflow without a site deployment or profile edits; keep collector failures atomic and public only.
+- Maintain the new generic username CLI, manual Action and local snapshot preview. Keep collection failures atomic and public only; never host or publish snapshots automatically.
 - Add automated accessibility/visual regression checks that run offline and do not need paid APIs.
 - Discuss licensing, versioning, distribution, and publishing strategy before any stable public release.
 - Consider a reusable output preset for GitHub profile embedding. Preview in repo first; never write to someone's profile automatically.

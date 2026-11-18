@@ -16,16 +16,26 @@ Code Factory is an experimental concept with a working renderer, public capture 
 ## Phase 1 | Visual and usability quality
 
 - [ ] Evaluate dark/light pixel/isometric artwork on GitHub desktop and mobile.
-- [ ] Improve heatmap distinction between lower and higher observed counts.
+- [x] Improve heatmap distinction between lower and higher observed counts.
+- [x] Add source-backed stage machinery, active-only conveyors and reduced-motion-safe micro-animation.
 - [ ] Improve legibility under high-density activity and narrow mobile displays.
 - [ ] Support accessible exploration of hidden events beyond two stages per day.
 - [ ] Add visual screenshot regression tests that remain offline and deterministic.
 - [ ] Confirm selected-week focus, contrast and reduced-motion behaviour.
 
+### November 2026 data-integrity and visual-density work
+
+- [x] Reconcile the 1,219-versus-894 public snapshot discrepancy by exact source IDs and document the missing-repository cause and uncertainty.
+- [x] Add unauthenticated public-visibility rechecks for previously observed owned repositories, without retaining or accessing private activity.
+- [x] Add a logarithmic five-level yearly activity colour scale and source-backed daily production gauges.
+- [x] Prioritise highest-volume source machines when only two groups fit in one workshop.
+- [ ] Inspect the new branch artwork on GitHub desktop and mobile, especially label crowding and high-density days.
+- [ ] Review historical fixture repository visibility before the first public release; Git history requires separate consideration.
+
 ## Phase 2 | Public-data and generic user experience
 
 - [ ] Formalise public-only collection semantics, including API search caps and partial data warnings.
-- [ ] Add a reproducible, easy username-to-SVG workflow without background paid API calls.
+- [x] Add a reproducible one-command username-to-SVG workflow and manual forkable GitHub Action without background paid API calls.
 - [x] Add a safe six-hour public account refresh producing four SVGs without altering frozen showcase data.
 - [ ] Keep private and employer-linked information out of public snapshots.
 - [ ] Distinguish public events from GitHub's own contribution totals in all designs and documentation.

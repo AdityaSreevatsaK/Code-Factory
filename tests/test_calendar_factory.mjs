@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { validSnapshot,calendarModel,selectedModel,dayMachines,render,TYPES } from "../calendar-factory.mjs";
+import { validSnapshot,calendarModel,selectedModel,dayMachines,calendarIntensity,render,TYPES } from "../calendar-factory.mjs";
 const fixture=JSON.parse(readFileSync(new URL("../fixtures/demo-activity.json",import.meta.url),"utf8"));
 const publicAccount=JSON.parse(readFileSync(new URL("../fixtures/adityasreevatsak-public-activity.json",import.meta.url),"utf8"));
 const clone=v=>structuredClone(v);
@@ -58,7 +58,7 @@ test("both layouts, both themes and both motion states render deterministic stan
  for(const layout of ["isometric","pixel"])for(const theme of ["dark","light"])for(const animated of [true,false]){
   const svg=render(fixture,{layout,theme,animated});
   assert.match(svg,/viewBox="0 0 1200 430"/);
-  assert.match(svg,/52-WEEK ACTIVITY CALENDAR/);
+  assert.match(svg,/YEARLY ACTIVITY · 53 WEEK COLUMNS/);
   assert.match(svg,/SYNTHETIC DEMO/);
   assert.match(svg,/<\/svg>\s*$/);
   assert.equal(svg.includes('class="travelling"'),animated);
@@ -85,7 +85,7 @@ test("many activities on one day are represented by bounded machines and an over
  const d=clone(fixture);
  d.activity.push(...[0,1,2,3].map(i=>({...d.activity[0],id:"extra"+i,repo_full_name:i%2?"sample-dev/atlas":"sample-dev/orbit",occurred_at:"2026-11-09T12:00:00Z"})));
  const svg=render(d,{selectedWeek:51});
- assert.match(svg,/\+2 more records \(1 stages\)/);
+ assert.match(svg,/\+1 more records \(1 stages\)/);
  assert.match(svg,/16 UNITS/);
  assert.equal(selectedModel(d).week.days[1].events.length,5);
 });
@@ -299,4 +299,52 @@ test("unsafe account labels cannot become SVG markup",()=>{
  const data=clone(publicAccount);
  data.user.login="<svg onload=alert(1)>";
  assert.throws(()=>render(data),/invalid public username/);
+});
+
+test("adaptive heatmap distinguishes a solitary event from high-activity days",()=>{
+ const dense=clone(publicAccount);
+ const original=calendarModel(dense);
+ assert.ok(original.peakUnits>10);
+ assert.equal(calendarIntensity(0,original.peakUnits),0);
+ assert.equal(calendarIntensity(1,original.peakUnits),1);
+ assert.equal(calendarIntensity(original.peakUnits,original.peakUnits),5);
+ assert.ok(calendarIntensity(2,original.peakUnits)<calendarIntensity(50,original.peakUnits));
+ assert.ok(calendarIntensity(5,original.peakUnits)<=calendarIntensity(10,original.peakUnits));
+ const graphic=render(dense,{layout:"isometric",theme:"dark"});
+ assert.match(graphic,/data-intensity="1" data-units="1"/);
+ assert.match(graphic,/data-intensity="5" data-units="/);
+ assert.match(graphic,/DAY INTENSITY/);
+ assert.match(graphic,/logarithmic scale/);
+});
+test("calendar intensity handles empty, flat and highly skewed activity",()=>{
+ for(const peak of [0,1,10,10000]){
+  assert.equal(calendarIntensity(0,peak),0);
+ }
+ assert.equal(calendarIntensity(1,1),1);
+ assert.equal(calendarIntensity(1,10000),1);
+ assert.equal(calendarIntensity(10000,10000),5);
+ for(let i=2;i<=500;i++)assert.ok(calendarIntensity(i,500)>=calendarIntensity(i-1,500));
+});
+test("busy days prioritise the largest source-backed repository machines deterministically",()=>{
+ const d=clone(fixture);
+ // The fixture's selected Monday already has a 4-unit Harbour forge.
+ d.activity.push(
+  {...fixture.activity[0],id:"tiny",repo_full_name:"sample-dev/orbit",occurred_at:"2026-11-09T13:01:00Z",count:1},
+  {...fixture.activity[0],id:"large",repo_full_name:"sample-dev/atlas",occurred_at:"2026-11-09T13:02:00Z",count:40}
+ );
+ const parts=dayMachines(selectedModel(d,51).week.days[1]);
+ assert.deepEqual(parts.map(x=>x.count),[40,4,1]);
+ const graphic=render(d,{selectedWeek:51});
+ assert.match(graphic,/data-repo="sample-dev\/atlas" data-kind="commit" data-records="1" data-units="40"/);
+ assert.match(graphic,/data-repo="sample-dev\/harbour" data-kind="commit" data-records="1" data-units="4"/);
+ assert.doesNotMatch(graphic,/class="active" data-repo="sample-dev\/orbit"/);
+ assert.match(graphic,/\+1 more records \(1 stages\)/);
+});
+test("daily production load LEDs reflect observed day counts, never invented work",()=>{
+ const graphic=render(fixture,{selectedWeek:51});
+ assert.match(graphic,/data-load-date="2026-11-09" data-load-level="[1-5]"/);
+ assert.match(graphic,/data-load-date="2026-11-10" data-load-level="0"/);
+ const empty=render(fixture,{selectedWeek:52});
+ assert.equal((empty.match(/data-load-level="0"/g)||[]).length,7);
+ assert.doesNotMatch(empty,/data-package="/);
 });

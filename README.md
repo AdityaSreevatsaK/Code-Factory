@@ -24,6 +24,29 @@ Other automatically refreshed themes: [Isometric light](exports/live-isometric-l
 
 The original [17 November 2026 historical public snapshot](fixtures/adityasreevatsak-public-activity.json) and [frozen isometric preview](exports/account-isometric-dark-still.svg) are retained for reproducibility. The [synthetic demo](fixtures/demo-activity.json) remains a separate regression fixture. Neither is overwritten by scheduled refreshes.
 
+## Data accuracy and calibrated activity
+
+The first scheduled capture contained fewer observed events than the frozen historical example. An [exact public-data audit](docs/DATA_COVERAGE_AUDIT.md) traced **455 missing records to one owned repository absent from the earlier public-repository listing**. The account's public status was verified during the audit, but the reason for the earlier listing omission is not conclusively known.
+
+The collector now re-verifies previously public owned repositories **without using an authentication token** before excluding them from a new capture. It does not retain or scan repositories that are no longer publicly accessible. API failures stop publication rather than producing a misleading update.
+
+The heatmap also uses a **calibrated logarithmic five-level activity scale** based on the year's observed peak. A single event is visually different from dozens or hundreds. Five small load indicators in each daily workshop show the corresponding day’s intensity, and busy days prioritise the two most active real repository stages while disclosing the remainder.
+
+To reproduce the capture comparison locally:
+
+```powershell
+npm run audit:coverage
+npm test
+npm run verify:exports
+npm run verify:live
+```
+
+These are **observed source-event units**, not GitHub's official contribution totals. See the [draft improvement PR](https://github.com/AdityaSreevatsaK/Code-Factory/pull/1) for the visual changes and verification status.
+
+### Working factory artwork (review branch)
+
+Each observed machine now has stage-specific details, calibrated work lights and a short conveyor for its active day. Browser animation adds moving gears, belts and electrical feeds. Static profile SVGs retain the detail without relying on animation; idle days remain idle.
+
 ## Automatic refresh
 
 - **Schedule:** 00:17, 06:17, 12:17 and 18:17 UTC, or manually from [Refresh public activity](https://github.com/AdityaSreevatsaK/Code-Factory/actions/workflows/refresh-activity.yml) using *Run workflow*.
@@ -41,6 +64,20 @@ npm run verify:exports
 ```
 
 The scheduled job does **not** edit your GitHub profile, publish a release or change repository visibility. See [live refresh workflow](.github/workflows/refresh-activity.yml) and [architecture](docs/ARCHITECTURE.md) for implementation details.
+
+## Generate a factory for any public GitHub username
+
+Run **one command** with Node 20+. No source edits, fixture changes, paid API or installation required:
+
+```powershell
+node scripts/create-factory.mjs --username octocat --output output/octocat
+```
+
+This collects public-only activity and writes a validated snapshot, four static SVGs and a `README-embed.md` snippet to the selected directory. For offline input, use `--snapshot path/to/public-activity.json`. To produce directly usable absolute Markdown image links **after hosting the SVGs**, add `--asset-base-url https://raw.githubusercontent.com/OWNER/REPO/BRANCH/ASSET_DIRECTORY`.
+
+Alternatively, fork the repository and run **Actions → Generate Code Factory for a public username → Run workflow**, then download the generated artefact. Workflow execution does not commit, host, or publish anyone's files automatically, and does not edit their profile. In a public fork, anyone with permission to run workflows can use it.
+
+The browser preview also accepts a local public snapshot JSON using **Open your public snapshot** and can download a still SVG for the selected week and design. The chosen file is processed locally and is not uploaded.
 
 ## Quick start
 

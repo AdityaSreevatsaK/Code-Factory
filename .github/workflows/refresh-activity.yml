@@ -49,6 +49,7 @@ jobs:
         run: |
           node refresh-public-activity.mjs \
             --username "$CODE_FACTORY_LIVE_USERNAME" \
+            --baseline fixtures/adityasreevatsak-public-activity.json \
             --output data/live-public-activity.json
 
       - name: Generate the four latest-week static SVGs

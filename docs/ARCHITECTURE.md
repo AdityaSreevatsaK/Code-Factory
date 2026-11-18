@@ -32,11 +32,14 @@ flowchart TD
 ## Source tree
 
 - `calendar-factory.mjs`: main rendering engine and CLI.
+- `factory-finish.mjs`: browser-safe, deterministic per-machine art and per-active-day conveyors, with optional reduced-motion-friendly CSS.
 - `refresh-public-activity.mjs`: public REST collector with injectable `request` for offline mocks.
-- `preview.html`: static single-page UI loading the renderer as a browser module, with a source switch between local JSON fixtures.
+- `preview.html`: static single-page UI loading the renderer as a browser module. Supports local JSON file selection and static SVG download without uploading files.
 - `fixtures/`: frozen historical public and synthetic test fixtures.
 - `data/live-public-activity.json`: approved scheduled public account snapshot.
 - `scripts/generate-live.mjs` and `scripts/verify-live.mjs`: four live static SVGs derived deterministically from the current snapshot.
+- `scripts/create-factory.mjs`: a no-source-edit, public-only username CLI producing four standalone stills, a snapshot and Markdown in a separate output folder.
+- `.github/workflows/generate-any-user.yml`: optional user-triggered workflow in a fork, storing output as a short-lived artefact with no commits or profile edits.
 - `.github/workflows/refresh-activity.yml`: public-only collection, validation and scoped publication every six hours.
 - `exports/`: the committed SVG deliverables. They are build outputs whose correctness is checked against the exact source renderer.
 - `tests/`: Node model, collector and Python XML integrity/legacy tests.
@@ -53,7 +56,7 @@ flowchart TD
 
 `dayMachines(day)` groups same-repository + same-event-stage records into one machine per day, preserving sum of units, number of source records, and source IDs. The renderer draws at most two distinct stages per day and reports overflow records/stages; all input records still affect the heatmap.
 
-`render(input,{layout,theme,animated,selectedWeek})` draws in this order: background/typography, 53×7 grid and selected column, seven day-level signal links, seven machine floors, event-specific machinery and source-backed cargo, and the summary/legend. Both isometric and pixel styles use original procedural SVG geometry. It is pure and deterministic.
+`render(input,{layout,theme,animated,selectedWeek})` draws in this order: background/typography, 53×7 grid and selected column, seven day-level signal links, seven machine floors, event-specific machinery and source-backed cargo, and the summary/legend. Both isometric and pixel styles use original procedural SVG geometry. The pure `enhanceFactorySvg` finish adds identity-preserving five-stage detailing and only observed active-day belts. Motion is optional, and reduced-motion media queries disable decorative movement. The combined render remains pure and deterministic.
 
 The CLI at the bottom of the module loads Node built-ins **only when invoked directly**. Browser imports must remain free from `node:` module dependencies.
 
@@ -70,9 +73,17 @@ It handles GitHub search limits, page boundaries, malformed responses and API fa
 
 This public-REST strategy does **not** obtain GitHub's authoritative per-day contribution count. It generally misses commits only on feature branches, some external organisation/upstream work, restricted activity and private data. A PR open and merge are independent observed stages even when GitHub credits them differently. Document these omissions prominently.
 
+## Coverage reconciliation and adaptive activity
+
+GitHub's `/users/:login/repos` public listing may temporarily omit an owned repository that remains publicly accessible. The collector now accepts **previously public names as candidates only** from the last live snapshot and an optional frozen public baseline. For each omitted owned repository, it performs a **new public metadata request without bearer credentials**, and scans its commits only if its current ownership and `visibility: "public"` are independently confirmed. Missing/private candidates are excluded, and API failures abort the refresh without replacing the last validated snapshot.
+
+Use `npm run audit:coverage` to compare event IDs across two captures. The [November 2026 discrepancy report](DATA_COVERAGE_AUDIT.md) records an exact reconciliation, not an assumption about GitHub's contribution counts.
+
+The calendar model stores `peakUnits` across all visible days. The renderer's `calendarIntensity(units,peakUnits)` maps 0 to an empty tier and non-zero activity to five **logarithmically spaced** colour tiers. A 1-unit day remains distinct from high-volume activity even when daily counts exceed 100. Each selected-week lane has a matching five-segment load indicator, while the two visible machines on a dense day are prioritised by actual source-backed units and record counts. Hidden groups still contribute to the calendar and are explicitly disclosed.
+
 ## Browser architecture
 
-`preview.html` is intentionally framework-free. It imports `calendar-factory.mjs`, fetches only **same-repository local fixture JSON**, and embeds the freshly rendered SVG into the page. Users can switch between the dated account dataset and the synthetic demo, choose a week with chart clicks or keyboard, inspect a seven-day ledger, change layout/theme/motion and zoom horizontally on mobile.
+`preview.html` is intentionally framework-free. It imports `calendar-factory.mjs`, fetches only **same-repository JSON fixtures or a user-selected local JSON file**, and embeds the freshly rendered SVG into the page. Users can switch between the dated account dataset and the synthetic demo, choose a week with chart clicks or keyboard, inspect a seven-day ledger, change layout/theme/motion and zoom horizontally on mobile.
 
 Never require a live GitHub token in the browser. Launch through a local HTTP server, not `file://`.
 
@@ -88,7 +99,7 @@ Never require a live GitHub token in the browser. Launch through a local HTTP se
 
 ## Performance model and constraints
 
-Validation is bounded to at most 5,000 repositories and 10,000 event records per snapshot. Event `count` is an integer of 1..100,000. Rendering avoids one graphic machine per raw event and groups per day. The SVG dimensions are 1200 × 430, with a 150 KB per-file test budget. Future optimisation must retain data integrity and a readable, recognisable calendar.
+Validation is bounded to at most 5,000 repositories and 10,000 event records per snapshot. Event `count` is an integer of 1..100,000. Rendering avoids one graphic machine per raw event and groups per day. The SVG dimensions are 1200 × 430, with an 180 KB per-file test budget (measured on output bytes) for detailed real-account artwork. Future optimisation must retain data integrity and a readable, recognisable calendar.
 
 ## Compatibility and extensibility
 

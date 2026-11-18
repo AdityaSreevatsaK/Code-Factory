@@ -26,6 +26,12 @@ Collector protections:
 - Take `GITHUB_TOKEN` from an environment variable **only**, without logging or storing it.
 - Read-only CI runs only with committed snapshots and mocks. The separate scheduled refresh job uses the built-in GitHub token with scoped `contents: write`, fetching only public activity and committing only five generated files after verification.
 
+## Handling temporarily missing public repositories
+
+The collector may use historical public snapshots as **candidate repository names**, but a candidate must never gain access just because it was once public. A missing owned repository is checked through an **anonymous GitHub metadata request**, without `GITHUB_TOKEN`, and is scanned only if ownership and public visibility are verified on that fresh response. Deleted, renamed, private, ambiguous or inaccessible candidates are excluded. Unexpected public API errors fail closed. No earlier event records are copied forward merely to inflate the current total.
+
+Historical fixtures can become sensitive if a previously public repository later becomes private or disappears. Before a public release, audit *all historical examples and Git history* for names, URLs and source details that should no longer be published. Removing a file in a later commit does **not** erase it from Git history. Seek the owner's approval before any history rewrite.
+
 ## Important known boundaries
 
 The public REST strategy is **not equivalent to GitHub's official contribution calendar**. Do not represent blanks as authenticated zeroes, PR merges as deployments, or observed event units as GitHub's contribution totals.

@@ -58,6 +58,24 @@ node calendar-factory.mjs fixtures/octocat-public-activity.json output/octocat
 
 `--since YYYY-MM-DD` overrides the rolling one-year start. GitHub Search caps results at 1,000 per query; the collector must reject overflow rather than silently dropping records. Do not relax these safeguards to make a refresh appear successful.
 
+## Audit public coverage
+
+```powershell
+npm run audit:coverage
+```
+
+This compares the frozen public historical capture with the most recent public scheduled snapshot by source event ID, lists missing/new records by kind and repository, and flags owned repositories not present in the refreshed scan. These reports are diagnostic and do **not** establish GitHub's official contribution totals.
+
+When a previously public owned repository is absent from GitHub's user-repository listing, the public collector re-verifies its current visibility **without a token** using optional historical hints. Only a newly verified public repository is scanned. Repositories that are no longer public are excluded; public metadata errors cause an atomic, fail-closed refresh.
+
+```powershell
+node refresh-public-activity.mjs --username AdityaSreevatsaK `
+  --baseline fixtures/adityasreevatsak-public-activity.json `
+  --output output/audited-public-activity.json
+```
+
+The scheduled workflow passes the historical baseline automatically. Keep any other locally collected users' data ignored and out of commits.
+
 ## Tests
 
 ```powershell
@@ -106,3 +124,11 @@ The GitHub Actions workflow `.github/workflows/ci.yml` runs on pushes to `master
 ## Review before publication
 
 No release has been approved. Discuss a source licence with the owner before accepting outside code contributions. Review security guidance, source snapshot provenance, public data count labels, accessibility, test coverage and all SVGs. A public repository by itself is not a published package or an authorised integration into anyone's GitHub profile.
+
+## Generate for arbitrary users
+
+Run `node scripts/create-factory.mjs --username LOGIN --output output/LOGIN`, or use the manual GitHub Action in a fork. The offline `--snapshot` option supports tests and reproducible builds. Generated files are isolated from `data/live-public-activity.json` and `exports/`; no profile, source or repository files are changed. Embedded image URLs are relative until the user publishes the files or supplies a verified HTTPS image directory.
+
+## Local browser preview of arbitrary accounts
+
+`preview.html` supports opening a downloaded `public-activity.json` file via the browser file picker, without editing source or making live GitHub requests. After choosing a week, style and theme, `Download still SVG` exports the self-contained SVG. The file picker validates the shared snapshot contract and caps input size at 4 MB. Files are not uploaded.

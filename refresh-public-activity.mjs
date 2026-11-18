@@ -11,7 +11,7 @@
  * Public search is capped at 1,000 results by GitHub. We fail closed rather
  * than writing an incomplete snapshot if any query exceeds that limit.
  */
-import { mkdir, writeFile, rename, unlink } from "node:fs/promises";
+import { mkdir, writeFile, rename, unlink, readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -32,21 +32,24 @@ function sourceRepo(raw) {
   return match[1];
 }
 function createRequester(token) {
-  return async function request(route,{allowEmpty=false}={}) {
+  return async function request(route,{allowEmpty=false,publicOnly=false,allowNotFound=false}={}) {
     const url = API+route;
     const headers = {
       "Accept":"application/vnd.github+json",
       "X-GitHub-Api-Version":"2022-11-28",
       "User-Agent":"github-activity-studio-code-factory"
     };
-    if(token) headers.Authorization="Bearer "+token;
+    // Verification of previously public repositories must never use a token
+    // that could expose a repository which has since become private.
+    if(token&&!publicOnly) headers.Authorization="Bearer "+token;
     const response=await fetch(url,{headers});
     if(allowEmpty&&response.status===409) return [];
+    if(allowNotFound&&response.status===404) return null;
     if(!response.ok) throw Error("GitHub public API HTTP "+response.status+" for "+route.split("?")[0]+". Check GitHub rate limits or token permissions.");
     return response.json();
   };
 }
-async function collect({request,now=new Date(),since,login=ACCOUNT}) {
+async function collect({request,now=new Date(),since,login=ACCOUNT,previousPublicRepositories=[]}) {
   assertLogin(login);
   const cutoff=now.toISOString().replace(/\.\d{3}Z$/,"Z");
   const from=assertDate(since??new Date(+now-365*DAY).toISOString().slice(0,10)).toISOString();
@@ -103,6 +106,26 @@ async function collect({request,now=new Date(),since,login=ACCOUNT}) {
     if(items.length<100)break;
     if(page===100)throw Error("Repository pagination limit reached; snapshot NOT written");
   }
+  // GitHub can omit a recently changed repository from /users/:login/repos
+  // even when its public URL is accessible. Re-check known public candidates
+  // WITHOUT bearer credentials. A private/removed candidate is never scanned
+  // or retained in the new snapshot.
+  if(!Array.isArray(previousPublicRepositories)||previousPublicRepositories.length>5000)throw Error("Invalid previous public repository hints");
+  let recheckedPublic=0,unavailableCount=0;
+  const prior=new Set(previousPublicRepositories.filter(full=>typeof full==="string"&&
+    /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(full)&&
+    full.split("/")[0].toLowerCase()===login.toLowerCase()));
+  for(const full of [...prior].sort()){
+    if(ownedPublic.has(full))continue;
+    const candidate=await request("/repos/"+full,{publicOnly:true,allowNotFound:true});
+    if(candidate===null){unavailableCount++;continue;}
+    if(!candidate||candidate.private!==false||candidate.visibility!=="public"||
+      candidate.full_name!==full||candidate.owner?.login?.toLowerCase()!==login.toLowerCase()){
+      unavailableCount++;continue;
+    }
+    ownedPublic.set(full,candidate);
+    recheckedPublic++;
+  }
   let scanned=0;
   const pages={};
   for(const full of [...ownedPublic.keys()].sort()){
@@ -139,12 +162,13 @@ async function collect({request,now=new Date(),since,login=ACCOUNT}) {
       start_utc:from,
       end_utc:cutoff,
       search_totals:totals,
-      commit_repo_scan:{first_page_repositories:scanned,pages,more:[],errors:[],source:"GitHub REST public owned repository default-branch commits"},
+      commit_repo_scan:{first_page_repositories:scanned,pages,more:[],errors:[],source:"GitHub REST public owned repository default-branch commits",rechecked_public_repositories:recheckedPublic,unavailable_previous_count:unavailableCount},
       notes:[
         "Only is:public issue and pull request searches, plus repositories explicitly marked public, are used.",
         "Authored commits are from public owned default branches; feature-branch and external upstream commits may be missing.",
         "PR opening and merging are separate observed stages, not GitHub's official contribution counting.",
-        "Partial, point-in-time observed event snapshot; not the official GitHub contributions calendar."
+        "Partial, point-in-time observed event snapshot; not the official GitHub contributions calendar.",
+        "Previously public repository hints are re-verified without bearer credentials and only included if still public."
       ]
     },
     provenance:{
@@ -153,19 +177,35 @@ async function collect({request,now=new Date(),since,login=ACCOUNT}) {
     }
   };
 }
+async function publicRepositoryHints(path,login){
+  if(!path)return [];
+  let source;
+  try{source=JSON.parse(await readFile(path,"utf8"));}
+  catch(error){if(error?.code==="ENOENT")return [];throw error;}
+  if(source?.schema_version!=="1"||source.source!=="github"||
+      source.user?.login?.toLowerCase()!==login.toLowerCase()||!Array.isArray(source.repositories)){
+    throw Error("Previous snapshot must be v1 public GitHub data for the requested user");
+  }
+  return source.repositories.map(r=>r.full_name);
+}
 async function main(argv) {
   const here=dirname(fileURLToPath(import.meta.url));
-  let since=null,output=null,login=ACCOUNT;
+  let since=null,output=null,baseline=null,login=ACCOUNT;
   for(let i=0;i<argv.length;i++){
     if(argv[i]==="--username"){if(!argv[i+1])throw Error("--username requires a GitHub login");login=assertLogin(argv[++i]);}
+    else if(argv[i]==="--baseline"){if(!argv[i+1])throw Error("--baseline requires a public snapshot path");baseline=resolve(argv[++i]);}
     else if(argv[i]==="--since"){if(!argv[i+1])throw Error("--since requires YYYY-MM-DD");since=argv[++i];}
     else if(argv[i]==="--output"){if(!argv[i+1])throw Error("--output requires a path");output=resolve(argv[++i]);}
-    else if(argv[i]==="--help"){console.log("Usage: node refresh-public-activity.mjs [--username github-login] [--since YYYY-MM-DD] [--output path]");return;}
+    else if(argv[i]==="--help"){console.log("Usage: node refresh-public-activity.mjs [--username github-login] [--since YYYY-MM-DD] [--baseline public-history.json] [--output path]");return;}
     else throw Error("Unknown argument: "+argv[i]);
   }
   assertLogin(login);
   if(!output)output=resolve(here,"fixtures/"+login.toLowerCase()+"-public-activity.json");
-  const snapshot=await collect({request:createRequester(process.env.GITHUB_TOKEN),since,login});
+  // Existing live data is a hint only, not an authority: every missing repo
+  // is independently checked for current PUBLIC visibility before scanning.
+  const prior=[...await publicRepositoryHints(output,login),
+    ...await publicRepositoryHints(baseline,login)];
+  const snapshot=await collect({request:createRequester(process.env.GITHUB_TOKEN),since,login,previousPublicRepositories:prior});
   await mkdir(dirname(output),{recursive:true});
   const temporary=output+"."+process.pid+".tmp";
   try {
@@ -178,7 +218,7 @@ async function main(argv) {
   console.log("Saved "+snapshot.activity.length+" public source events across "+snapshot.repositories.length+" repositories to "+output);
   console.log("Snapshot captured "+snapshot.generated_at+". Not an official GitHub contributions total.");
 }
-export {collect,assertDate,sourceRepo};
+export {collect,createRequester,assertDate,sourceRepo,publicRepositoryHints};
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   main(process.argv.slice(2)).catch(error=>{console.error(String(error));process.exitCode=1;});
 }

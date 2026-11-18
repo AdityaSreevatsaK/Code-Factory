@@ -42,6 +42,18 @@ Colour is supplemental: source event type also appears in text/shape and machine
 
 The dated real showcase contains significantly denser activity than the synthetic fixture. New design work must be judged against **both**, especially for overlapping labels, low/high intensity discrimination and overflow.
 
+## High-density activity, perceptual scale and machine priority
+
+An absolute colour threshold of ten events made daily counts of 11 and 100 appear identical. Code Factory now calibrates its five active heatmap tiers logarithmically against the **highest observed daily unit count in the visible year**. Exact counts remain available in day tooltips, daily lane labels and source records; colour is deliberately a supplementary signal, never an official contribution score.
+
+Each active workshop shows a slim, five-segment `data-load-level` indicator derived from the same calibrated source count. Empty workshops remain unlit. When activity produces more than two repository-stage groups for a day, the display selects the two groups with the **largest verified unit totals**, breaking ties by record count and stable repository identity. The missing groups are disclosed in an overflow note, with their counts still included in the calendar.
+
+The activity legend states the observed daily unit range and the logarithmic nature of the scale. This is a meaningful visual correction, **not** an invitation to invent extra animation, commits or badges. Validate light and dark, pixel and isometric layouts using both the sparse synthetic fixture and the much denser public account fixture.
+
+## Working factory finish (visual pass 2)
+
+The factory now has five stage-specific original machinery details: forge vents, assembly joints, sealing press, inspection optics and dispatch crane. Five calibrated work lights reflect recorded per-machine units relative to the observed annual peak. Short working conveyors appear only for days with genuine recorded activity, never for idle or future days. Animated browser SVGs add rolling gears, belts and a pulsing selected-week power feed, with reduced-motion support. Still SVGs preserve the artwork without motion. The pure `factory-finish.mjs` transformer is deterministic, source-backed and used on all 18 reproducible exports.
+
 ## Interactivity and accessibility
 
 - The selected week is represented by one focusable calendar group, with `role="button"` and `aria-pressed` state.

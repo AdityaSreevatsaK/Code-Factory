@@ -13,7 +13,7 @@ test("live outputs are deterministic, all static, with four distinct names",()=>
   assert.equal(new Set(LIVE_ASSETS).size,4);
   assert.ok(first.files.every(f=>f.content.includes("@AdityaSreevatsaK")));
   assert.ok(first.files.every(f=>!f.content.includes("<animateMotion")));
-  assert.ok(first.files.every(f=>f.content.length<150000));
+  assert.ok(first.files.every(f=>f.content.length<180000));
 });
 test("live view selects the latest active week, not frozen week 51",()=>{
   const data=structuredClone(publicSource);
