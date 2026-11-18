@@ -24,7 +24,7 @@ Collector protections:
 - Reject incomplete searches, over-limit pages, malformed API results and contradictory event ordering.
 - Write to a temporary file, then rename only after successful completion.
 - Take `GITHUB_TOKEN` from an environment variable **only**, without logging or storing it.
-- CI runs exclusively with committed snapshots and mocked API responses. No API token is required.
+- Read-only CI runs only with committed snapshots and mocks. The separate scheduled refresh job uses the built-in GitHub token with scoped `contents: write`, fetching only public activity and committing only five generated files after verification.
 
 ## Important known boundaries
 
@@ -45,6 +45,6 @@ A GitHub README image is a **static** SVG. Treat animated output as local-browse
 
 ## Dependencies and releases
 
-There are no npm runtime dependencies; Node and Python standard libraries only. GitHub Actions has read-only permission. No external collector service, scheduled publication, cloud infrastructure or paid API is required.
+There are no npm runtime dependencies; Node and Python standard libraries only. GitHub Actions CI is read-only; the separate approved refresh workflow has scoped write access for public generated files. No separate server, external collector service or paid API is required.
 
 Source code is currently **unlicensed pending an explicit owner decision**. Do not treat public GitHub repository visibility as permission to redistribute or reuse third-party code; ensure introduced material is appropriately licensed if/when the project itself is licensed.

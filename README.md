@@ -90,7 +90,7 @@ The public collector only queries public PRs/issues and authored commits on publ
 .\verify.ps1
 ```
 
-The script runs Node and Python tests, regenerates all **14** committed SVGs in temporary directories and compares them with the checked-in versions. To intentionally regenerate the committed assets, run `.\verify.ps1 -Regenerate`, inspect the diff, then commit it.
+The script runs Node and Python tests, verifies all **18** committed SVGs: fourteen historical examples plus four live account images in temporary directories and compares them with the checked-in versions. To intentionally regenerate the committed assets, run `.\verify.ps1 -Regenerate`, inspect the diff, then commit it.
 
 ## Repository map
 
@@ -99,8 +99,10 @@ The script runs Node and Python tests, regenerates all **14** committed SVGs in 
 | `calendar-factory.mjs` | Normalised input validation, 53-column calendar model and deterministic SVG rendering/CLI |
 | `refresh-public-activity.mjs` | Public-only GitHub REST collection and snapshot CLI |
 | `preview.html` | Standalone interactive browser preview, no framework |
-| `fixtures/` | Synthetic contract fixture and clearly labelled dated public showcase snapshot |
-| `exports/` | 14 committed static/optional animated and historical-week SVG assets |
+| `fixtures/` | Frozen synthetic and historical public snapshots |
+| `data/live-public-activity.json` | Automatically refreshed public account snapshot |
+| `.github/workflows/refresh-activity.yml` | Approved six-hour public-only activity refresh |
+| `exports/` | Four live account SVGs plus 14 frozen historical/demo SVGs |
 | `tests/` | Node and Python regression tests, including public collector mocks |
 | `scripts/` | Cross-platform generated-asset verification |
 | `legacy/` | Preserved earlier Python factory prototype, **not** the current renderer |

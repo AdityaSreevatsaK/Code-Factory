@@ -29,7 +29,7 @@ Project owner: `AdityaSreevatsaK`. The user prefers British English, clear techn
 - Treat all snapshot fields, display labels, event URLs and GitHub API responses as hostile. Validate schema, enforce bounds, prevent XML injection, SVG scripting, XSS, untrusted URL fetches and token exposure.
 - `GITHUB_TOKEN` is optional for rate limits. Never print, persist, commit, upload, echo or embed it. Never put a token in browser JavaScript or a static SVG.
 - Public GitHub APIs are rate-limited, paginated and incomplete for total contributions. **Fail closed** on partial/ambiguous fetches. Make refresh atomic: preserve the previous known-good snapshot if any request fails. No paid services, cloud infrastructure or network-dependent CI tests.
-- The account showcase in `fixtures/adityasreevatsak-public-activity.json` is a frozen public capture from 17 November 2026, not live data. Do not silently refresh it, redate it, or change README statistics without re-verification and user approval for publishing updated snapshots.
+- The historical account capture in `fixtures/adityasreevatsak-public-activity.json` remains frozen. The separately approved six-hour workflow updates only `data/live-public-activity.json` and the four `exports/live-*-still.svg` images. Never silently overwrite historical fixtures or add new publication targets.
 - `fixtures/*-public-activity.json` files for other usernames are ignored by default. Never override `.gitignore` to commit someone's snapshot without reviewing its public provenance.
 - Repository visibility is currently public; **no third-party reuse licence has been selected**. Do not add MIT/Apache/GPL or state that the code is licensed without the owner's decision.
 
@@ -42,7 +42,10 @@ Project owner: `AdityaSreevatsaK`. The user prefers British English, clear techn
 | `preview.html` | One-page ES module browser preview; imports renderer without invoking Node-only code. Sources are local `fixtures/` JSON files |
 | `fixtures/demo-activity.json` | Isolated stable synthetic scenario, must always be labelled demo |
 | `fixtures/adityasreevatsak-public-activity.json` | Dated, incomplete but genuine public showcase data |
-| `exports/` | 14 committed SVGs: eight demo layout/theme/motion variants, two historical demo stills, four public-account stills |
+| `exports/` | 18 SVGs: fourteen frozen historical/demo images plus four approved scheduled live images |
+| `data/live-public-activity.json` | Public-only auto-refreshed account input, separate from frozen fixtures |
+| `scripts/generate-live.mjs` and `scripts/verify-live.mjs` | Current-week generation and integrity checks |
+| `.github/workflows/refresh-activity.yml` | Approved six-hour schedule, validates and commits five generated files only |
 | `tests/test_calendar_factory.mjs` | Node renderer/model regression |
 | `tests/test_public_refresh.mjs` | Mocked public GitHub API collector regression, must stay offline |
 | `tests/test_calendar_exports.py` | Python XML/asset contract tests |
@@ -60,14 +63,15 @@ From repository root, on Windows PowerShell or a standard shell:
 
 ```text
 node --version                           # Node >=20
-node --test tests/test_calendar_factory.mjs tests/test_public_refresh.mjs
+npm test
 python -m unittest discover -s tests -v # Python >=3.11
-node scripts/verify-exports.mjs          # Must verify all 14 checked-in SVGs
+npm run verify:exports                   # 14 historical/demo images
+npm run verify:live                      # 4 auto-refreshed public account images
 node calendar-factory.mjs               # Regenerate 8 primary demo SVGs
 python -m http.server 8000               # Open http://localhost:8000/preview.html
 ```
 
-On Windows, `.\verify.ps1` runs the native checks. `.\verify.ps1 -Regenerate` intentionally rewrites all 14 exports, including the two pinned historical demo stills and four account stills. Prefer read-only verification while reviewing; carefully inspect any SVG diff before committing.
+On Windows, `.\verify.ps1` runs the native checks. `.\verify.ps1 -Regenerate` intentionally rewrites all 18 exports, including the two pinned historical demo stills and four account stills. Prefer read-only verification while reviewing; carefully inspect any SVG diff before committing.
 
 **Do not claim a test ran unless it actually ran.** If a particular runtime is unavailable, state exactly which checks were executed in a substitute harness and which remain unverified.
 
@@ -99,7 +103,7 @@ When preparing a public-facing change, check copyright, image licensing, depende
 - [ ] Input/output provenance and event-stage semantics remain truthful
 - [ ] No private inputs, secrets, untrusted SVG execution or implicit network fetches
 - [ ] Demo and real captures visibly differentiated
-- [ ] Native tests and all 14 SVG export checks executed or explicitly marked unverified
+- [ ] Native tests and all 18 SVG export checks executed or explicitly marked unverified
 - [ ] Windows and Linux workflows preserved
 - [ ] Architecture, README and handover updated when needed
 - [ ] No unapproved merge, release, visibility, profile or licence change

@@ -5,7 +5,7 @@
 - **Node.js 20+**, no third-party Node dependencies. `package.json` defines scripts only.
 - **Python 3.11+**, standard library only, for legacy rendering and committed SVG XML checks.
 - **Windows PowerShell** is the primary contributor workflow. CI also verifies Windows and Ubuntu.
-- Internet access is **not required** for rendering, preview, tests or CI; only the optional public GitHub refresh makes network requests.
+- Rendering, preview, tests and read-only CI work offline. The separately authorised six-hour GitHub Actions refresh collects public data over the network.
 
 ## Initial clone
 
@@ -71,13 +71,15 @@ npm run verify:exports
 
 `python -m unittest discover`: XML parser checks for committed SVG structure, accessibility metadata and source-backed cargo; separate tests cover preserved legacy Python code.
 
-`npm run verify:exports`: checks all **14** committed SVGs against freshly generated in-memory renderer output, normalises only line endings, verifies size and absence of executable SVG content, and fails on stale art.
+`npm run verify:live` checks the four automatically refreshed profile SVGs against `data/live-public-activity.json`.
 
-`.\verify.ps1`: runs native Node and Python suites and invokes the exporter CLI in temporary directories to compare all 14 files. `-Regenerate` rewrites all derived images intentionally. If a fixture or renderer changes, update the corresponding assets, verify differences and never commit a partially generated gallery.
+`npm run verify:exports`: checks all **14 historical** committed SVGs against freshly generated in-memory renderer output, normalises only line endings, verifies size and absence of executable SVG content, and fails on stale art.
+
+`.\verify.ps1`: runs native Node and Python suites and invokes the exporter CLI in temporary directories to compare all 18 files. `-Regenerate` rewrites all derived images intentionally. If a fixture or renderer changes, update the corresponding assets, verify differences and never commit a partially generated gallery.
 
 ## CI
 
-The GitHub Actions workflow `.github/workflows/ci.yml` runs on pushes to `master`, pull requests and manual dispatch, on Ubuntu and Windows with Node 20 and Python 3.11. It requests **contents: read** only and does not collect live GitHub data, install npm dependencies, spend on APIs, or require a secret. Do not extend CI into scheduled refresh/publish without approval.
+The GitHub Actions workflow `.github/workflows/ci.yml` runs on pushes to `master`, pull requests and manual dispatch, on Ubuntu and Windows with Node 20 and Python 3.11. It requests **contents: read** only and does not collect live GitHub data, install npm dependencies, spend on APIs, or require a secret. The separately approved `.github/workflows/refresh-activity.yml` runs every six hours, scoped to the public account and five generated paths. CI remains read-only and offline.
 
 ## Suggested development loop
 
