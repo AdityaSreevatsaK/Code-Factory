@@ -6,19 +6,41 @@ Code Factory is an experimental, standalone, zero-dependency SVG visualisation. 
 
 > **Accuracy:** This is an *observed public-activity* visualisation, **not GitHub's official contributions calendar**. Different event types have different counting semantics. PR opens and later merges are separate stages. The public collector cannot see all contributions, private repositories or every upstream/feature-branch commit.
 
-## Account showcase
+## Automatically refreshed account showcase
 
-These images use a fixed public snapshot for [@AdityaSreevatsaK](https://github.com/AdityaSreevatsaK), captured on **17 November 2026**. They do not update automatically.
+[![Public activity refresh](https://github.com/AdityaSreevatsaK/Code-Factory/actions/workflows/refresh-activity.yml/badge.svg)](https://github.com/AdityaSreevatsaK/Code-Factory/actions/workflows/refresh-activity.yml)
+
+The images below use **observed public activity** from [@AdityaSreevatsaK](https://github.com/AdityaSreevatsaK). A GitHub Actions workflow refreshes the public snapshot and these SVGs **approximately every six hours**, subject to GitHub scheduling and API availability. The source timestamp is available in [the latest public snapshot](data/live-public-activity.json). On refresh failure, the previous validated images remain available.
 
 ### Isometric Foundry
 
-![Code Factory isometric dark: source-backed public GitHub calendar with seven activity-driven workshop lanes](exports/account-isometric-dark-still.svg)
+![Code Factory isometric dark: source-backed public GitHub calendar with seven activity-driven workshop lanes](exports/live-isometric-dark-still.svg)
 
 ### Pixel Works
 
-![Code Factory pixel light: source-backed public GitHub calendar with seven activity-driven workshop lanes](exports/account-pixel-light-still.svg)
+![Code Factory pixel light: source-backed public GitHub calendar with seven activity-driven workshop lanes](exports/live-pixel-light-still.svg)
 
-Other themes: [Isometric light](exports/account-isometric-light-still.svg) · [Pixel dark](exports/account-pixel-dark-still.svg). The selected example week is **8–14 November 2026**. For tests and visual comparisons, [synthetic demo imagery](exports/isometric-dark-still.svg) is supplied separately.
+Other automatically refreshed themes: [Isometric light](exports/live-isometric-light-still.svg) · [Pixel dark](exports/live-pixel-dark-still.svg). Each image highlights the **most recent observed active week**, including the current incomplete week when activity exists.
+
+The original [17 November 2026 historical public snapshot](fixtures/adityasreevatsak-public-activity.json) and [frozen isometric preview](exports/account-isometric-dark-still.svg) are retained for reproducibility. The [synthetic demo](fixtures/demo-activity.json) remains a separate regression fixture. Neither is overwritten by scheduled refreshes.
+
+## Automatic refresh
+
+- **Schedule:** 00:17, 06:17, 12:17 and 18:17 UTC, or manually from [Refresh public activity](https://github.com/AdityaSreevatsaK/Code-Factory/actions/workflows/refresh-activity.yml) using *Run workflow*.
+- **Data source:** public GitHub PRs, issues, mergers and publicly owned default-branch commits. No private repository collection or official contribution-total claims.
+- **Published files:** `data/live-public-activity.json` and the four `exports/live-*-still.svg` images, committed to `master` only after validation.
+- **Safety:** the built-in GitHub Actions token is never committed. API failures, incomplete results or invalid SVGs prevent publication.
+- **Cost:** GitHub-hosted Actions usage is subject to repository and account allowances. This workflow requires no paid API or separate server.
+
+To check the current publication locally:
+
+```powershell
+npm test
+npm run verify:live
+npm run verify:exports
+```
+
+The scheduled job does **not** edit your GitHub profile, publish a release or change repository visibility. See [live refresh workflow](.github/workflows/refresh-activity.yml) and [architecture](docs/ARCHITECTURE.md) for implementation details.
 
 ## Quick start
 
@@ -40,10 +62,11 @@ npm test
 # All Python tests (including retained legacy artwork)
 python -m unittest discover -s tests -v
 
-# Compare committed SVGs with deterministic regenerations
+# Compare committed historical and live SVGs with deterministic regenerations
 npm run verify:exports
+npm run verify:live
 
-# Interactive preview, with public-account/demo switch
+# Interactive preview, with live-account/historical/demo switch
 python -m http.server 8000
 ```
 
