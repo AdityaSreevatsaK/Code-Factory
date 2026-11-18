@@ -1,0 +1,82 @@
+name: Refresh public activity
+
+# Scheduled every six hours, with a manual run option. The scoped push trigger
+# lets CI exercise changes to this workflow without rerunning on data commits.
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/refresh-activity.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: code-factory-public-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.repository == 'AdityaSreevatsaK/Code-Factory' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      CODE_FACTORY_LIVE_USERNAME: AdityaSreevatsaK
+
+    steps:
+      - name: Checkout the canonical default branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run offline regression tests
+        run: npm test
+
+      - name: Collect verified public GitHub activity
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node refresh-public-activity.mjs \
+            --username "$CODE_FACTORY_LIVE_USERNAME" \
+            --output data/live-public-activity.json
+
+      - name: Generate the four latest-week static SVGs
+        run: node scripts/generate-live.mjs
+
+      - name: Verify all historical and live exports
+        run: |
+          npm run verify:exports
+          npm run verify:live
+
+      - name: Commit only the generated public data and four SVGs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -- data/live-public-activity.json \
+            exports/live-isometric-dark-still.svg \
+            exports/live-isometric-light-still.svg \
+            exports/live-pixel-dark-still.svg \
+            exports/live-pixel-light-still.svg
+          if git diff --cached --quiet; then
+            echo "No changes to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "data(live): refresh observed public GitHub activity [skip ci]"
+          git push origin HEAD:master
+
+# Nothing is published if collection or verification fails. The previous
+# complete images remain visible. No profile README, private repo or token
+# is modified or committed. GitHub_TOKEN pushes do not recursively run CI.
