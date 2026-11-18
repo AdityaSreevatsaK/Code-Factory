@@ -33,7 +33,9 @@ jobs:
         run: npm test
       - name: Python legacy and SVG integrity tests
         run: python -m unittest discover -s tests -v
-      - name: Reproduce all fourteen committed SVGs
+      - name: Reproduce fourteen historical SVGs
         run: npm run verify:exports
+      - name: Verify four current live SVGs
+        run: npm run verify:live
 
 # No npm install, API tokens, network collection, private data or paid services.
