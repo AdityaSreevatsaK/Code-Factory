@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: code-factory-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline-verification:
+    name: ${{ matrix.os }} / Node 20 / Python 3.11
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Node regression tests
+        run: npm test
+      - name: Python legacy and SVG integrity tests
+        run: python -m unittest discover -s tests -v
+      - name: Reproduce all fourteen committed SVGs
+        run: npm run verify:exports
+
+# No npm install, API tokens, network collection, private data or paid services.

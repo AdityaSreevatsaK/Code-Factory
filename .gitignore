@@ -1,0 +1,22 @@
+# Local configuration, credentials and tooling
+.env
+.env.*
+!.env.example
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.idea/
+.DS_Store
+
+# Uncommitted generated outputs
+output/
+exports-legacy/
+legacy/exports-legacy/
+
+# Avoid accidentally publishing newly collected user snapshots.
+# The explicitly approved public account showcase is tracked.
+fixtures/*-public-activity.json
+!fixtures/adityasreevatsak-public-activity.json
