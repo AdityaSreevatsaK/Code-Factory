@@ -37,5 +37,9 @@ jobs:
         run: npm run verify:exports
       - name: Verify four current live SVGs
         run: npm run verify:live
+      - name: Exercise native PowerShell verifier
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: .\verify.ps1
 
 # No npm install, API tokens, network collection, private data or paid services.
