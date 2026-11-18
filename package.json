@@ -9,9 +9,11 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test tests/test_calendar_factory.mjs tests/test_public_refresh.mjs",
+    "test": "node --test tests/*.mjs",
     "verify:exports": "node scripts/verify-exports.mjs",
     "render": "node calendar-factory.mjs",
-    "refresh": "node refresh-public-activity.mjs"
+    "refresh": "node refresh-public-activity.mjs",
+    "render:live": "node scripts/generate-live.mjs",
+    "verify:live": "node scripts/verify-live.mjs"
   }
 }
