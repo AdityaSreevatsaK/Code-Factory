@@ -218,7 +218,7 @@ async function main(argv) {
   console.log("Saved "+snapshot.activity.length+" public source events across "+snapshot.repositories.length+" repositories to "+output);
   console.log("Snapshot captured "+snapshot.generated_at+". Not an official GitHub contributions total.");
 }
-export {collect,assertDate,sourceRepo,publicRepositoryHints};
+export {collect,createRequester,assertDate,sourceRepo,publicRepositoryHints};
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   main(process.argv.slice(2)).catch(error=>{console.error(String(error));process.exitCode=1;});
 }

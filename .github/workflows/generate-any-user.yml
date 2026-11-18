@@ -1,0 +1,36 @@
+name: Generate Code Factory for a public username
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'Public GitHub username (no leading @)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build-user-factory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Generate public-only factory
+        env:
+          FACTORY_USERNAME: ${{ inputs.username }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/create-factory.mjs --username "$FACTORY_USERNAME" --output generated
+      - name: Upload standalone static SVGs and Markdown
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-factory-generated
+          path: generated/
+          if-no-files-found: error
+          retention-days: 14
+
+# Manual, public-only, no push, no private data collection or profile edits.

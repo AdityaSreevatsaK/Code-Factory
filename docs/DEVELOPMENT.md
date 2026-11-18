@@ -124,3 +124,7 @@ The GitHub Actions workflow `.github/workflows/ci.yml` runs on pushes to `master
 ## Review before publication
 
 No release has been approved. Discuss a source licence with the owner before accepting outside code contributions. Review security guidance, source snapshot provenance, public data count labels, accessibility, test coverage and all SVGs. A public repository by itself is not a published package or an authorised integration into anyone's GitHub profile.
+
+## Generate for arbitrary users
+
+Run `node scripts/create-factory.mjs --username LOGIN --output output/LOGIN`, or use the manual GitHub Action in a fork. The offline `--snapshot` option supports tests and reproducible builds. Generated files are isolated from `data/live-public-activity.json` and `exports/`; no profile, source or repository files are changed. Embedded image URLs are relative until the user publishes the files or supplies a verified HTTPS image directory.

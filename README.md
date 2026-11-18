@@ -65,6 +65,18 @@ npm run verify:exports
 
 The scheduled job does **not** edit your GitHub profile, publish a release or change repository visibility. See [live refresh workflow](.github/workflows/refresh-activity.yml) and [architecture](docs/ARCHITECTURE.md) for implementation details.
 
+## Generate a factory for any public GitHub username
+
+Run **one command** with Node 20+. No source edits, fixture changes, paid API or installation required:
+
+```powershell
+node scripts/create-factory.mjs --username octocat --output output/octocat
+```
+
+This collects public-only activity and writes a validated snapshot, four static SVGs and a `README-embed.md` snippet to the selected directory. For offline input, use `--snapshot path/to/public-activity.json`. To produce directly usable absolute Markdown image links **after hosting the SVGs**, add `--asset-base-url https://raw.githubusercontent.com/OWNER/REPO/BRANCH/ASSET_DIRECTORY`.
+
+Alternatively, fork the repository and run **Actions → Generate Code Factory for a public username → Run workflow**, then download the generated artefact. Workflow execution does not commit, host, or publish anyone's files automatically, and does not edit their profile. In a public fork, anyone with permission to run workflows can use it.
+
 ## Quick start
 
 Requires **Node.js 20+** and optionally **Python 3.11+** for legacy artwork tests and the local preview server. No npm installation, paid service or GitHub token is required to render an existing snapshot.

@@ -35,7 +35,7 @@ Code Factory is an experimental concept with a working renderer, public capture 
 ## Phase 2 | Public-data and generic user experience
 
 - [ ] Formalise public-only collection semantics, including API search caps and partial data warnings.
-- [ ] Add a reproducible, easy username-to-SVG workflow without background paid API calls.
+- [x] Add a reproducible one-command username-to-SVG workflow and manual forkable GitHub Action without background paid API calls.
 - [x] Add a safe six-hour public account refresh producing four SVGs without altering frozen showcase data.
 - [ ] Keep private and employer-linked information out of public snapshots.
 - [ ] Distinguish public events from GitHub's own contribution totals in all designs and documentation.
