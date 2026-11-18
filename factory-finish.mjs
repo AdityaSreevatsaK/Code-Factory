@@ -32,7 +32,7 @@ export function enhanceFactorySvg(svg){
   if(lane!==7)throw Error("Factory artwork requires seven daily workshop lanes");
   const dayOffsets=[...svg.matchAll(/<g data-day="\d{4}-\d{2}-\d{2}">/g)].map(m=>m.index);
   if(dayOffsets.length!==7)throw Error("Factory artwork requires seven source-backed days");
-  const activePattern=/(<g class="active" data-repo="([^"]+)" data-kind="([^"]+)" data-records="(\d+)" data-units="(\d+)"><g class="machine (isometric|pixel)"(?: shape-rendering="crispEdges")?><g class="machine-part">)([\s\S]*?)(<\/g>)(?=<text x)/g;
+  const activePattern=/(<g class="active" data-repo="([^"]+)" data-kind="([^"]+)" data-records="(\d+)" data-units="(\d+)"><g class="machine (isometric|pixel)"(?: shape-rendering="crispEdges")?\s*><g class="machine-part">)([\s\S]*?)(<\/g>)(?=<text x)/g;
   const active=[...svg.matchAll(activePattern)];
   const dayFor=offset=>{let day=-1;for(let i=0;i<dayOffsets.length;i++)if(offset>dayOffsets[i])day=i;return day;};
   const byDay=Array(7).fill(0);
