@@ -58,6 +58,24 @@ node calendar-factory.mjs fixtures/octocat-public-activity.json output/octocat
 
 `--since YYYY-MM-DD` overrides the rolling one-year start. GitHub Search caps results at 1,000 per query; the collector must reject overflow rather than silently dropping records. Do not relax these safeguards to make a refresh appear successful.
 
+## Audit public coverage
+
+```powershell
+npm run audit:coverage
+```
+
+This compares the frozen public historical capture with the most recent public scheduled snapshot by source event ID, lists missing/new records by kind and repository, and flags owned repositories not present in the refreshed scan. These reports are diagnostic and do **not** establish GitHub's official contribution totals.
+
+When a previously public owned repository is absent from GitHub's user-repository listing, the public collector re-verifies its current visibility **without a token** using optional historical hints. Only a newly verified public repository is scanned. Repositories that are no longer public are excluded; public metadata errors cause an atomic, fail-closed refresh.
+
+```powershell
+node refresh-public-activity.mjs --username AdityaSreevatsaK `
+  --baseline fixtures/adityasreevatsak-public-activity.json `
+  --output output/audited-public-activity.json
+```
+
+The scheduled workflow passes the historical baseline automatically. Keep any other locally collected users' data ignored and out of commits.
+
 ## Tests
 
 ```powershell

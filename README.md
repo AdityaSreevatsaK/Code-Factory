@@ -24,6 +24,25 @@ Other automatically refreshed themes: [Isometric light](exports/live-isometric-l
 
 The original [17 November 2026 historical public snapshot](fixtures/adityasreevatsak-public-activity.json) and [frozen isometric preview](exports/account-isometric-dark-still.svg) are retained for reproducibility. The [synthetic demo](fixtures/demo-activity.json) remains a separate regression fixture. Neither is overwritten by scheduled refreshes.
 
+## Data accuracy and calibrated activity
+
+The first scheduled capture contained fewer observed events than the frozen historical example. An [exact public-data audit](docs/DATA_COVERAGE_AUDIT.md) traced **455 missing records to one owned repository absent from the earlier public-repository listing**. The account's public status was verified during the audit, but the reason for the earlier listing omission is not conclusively known.
+
+The collector now re-verifies previously public owned repositories **without using an authentication token** before excluding them from a new capture. It does not retain or scan repositories that are no longer publicly accessible. API failures stop publication rather than producing a misleading update.
+
+The heatmap also uses a **calibrated logarithmic five-level activity scale** based on the year's observed peak. A single event is visually different from dozens or hundreds. Five small load indicators in each daily workshop show the corresponding day’s intensity, and busy days prioritise the two most active real repository stages while disclosing the remainder.
+
+To reproduce the capture comparison locally:
+
+```powershell
+npm run audit:coverage
+npm test
+npm run verify:exports
+npm run verify:live
+```
+
+These are **observed source-event units**, not GitHub's official contribution totals. See the [draft improvement PR](https://github.com/AdityaSreevatsaK/Code-Factory/pull/1) for the visual changes and verification status.
+
 ## Automatic refresh
 
 - **Schedule:** 00:17, 06:17, 12:17 and 18:17 UTC, or manually from [Refresh public activity](https://github.com/AdityaSreevatsaK/Code-Factory/actions/workflows/refresh-activity.yml) using *Run workflow*.

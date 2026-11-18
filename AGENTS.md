@@ -33,6 +33,12 @@ Project owner: `AdityaSreevatsaK`. The user prefers British English, clear techn
 - `fixtures/*-public-activity.json` files for other usernames are ignored by default. Never override `.gitignore` to commit someone's snapshot without reviewing its public provenance.
 - Repository visibility is currently public; **no third-party reuse licence has been selected**. Do not add MIT/Apache/GPL or state that the code is licensed without the owner's decision.
 
+### Source coverage reconciliation
+
+When an auto-refreshed public snapshot loses a previously observed owned repository, do not silently treat its historical activity as zero. The collector may use a previous snapshot and the preserved public example as **repository name hints**, but each missing candidate must be verified against **unauthenticated, currently public GitHub repository metadata** before scanning it. If it is private, missing or ambiguous, do not query its commits or retain its records. Fail closed on public API errors and never invent activity. The historical snapshot itself remains immutable. See `docs/DATA_COVERAGE_AUDIT.md` and `npm run audit:coverage`.
+
+**Art correctness:** calendar intensity should adapt to the observed year's peak, with distinct low and high activity. The load meter in each daily lane must be derived from recorded units, not animation noise. When more than two repository-stage groups occur, display the two highest observed counts and disclose hidden activity. Verify all 18 deterministic SVG exports after any renderer modification.
+
 ## 4. File and interface contracts
 
 | Path | Public interface and purpose |
