@@ -1,7 +1,7 @@
 """Code Factory: offline, deterministic GitHub activity illustration generator.
 
 All assets are original procedural SVG. A factory is a visual metaphor, not CI status.
-Run: python concepts/code-factory/factory.py
+Run: python legacy/factory.py
 """
 from __future__ import annotations
 
