@@ -58,7 +58,7 @@ test("both layouts, both themes and both motion states render deterministic stan
  for(const layout of ["isometric","pixel"])for(const theme of ["dark","light"])for(const animated of [true,false]){
   const svg=render(fixture,{layout,theme,animated});
   assert.match(svg,/viewBox="0 0 1200 430"/);
-  assert.match(svg,/52-WEEK ACTIVITY CALENDAR/);
+  assert.match(svg,/YEARLY ACTIVITY · 53 WEEK COLUMNS/);
   assert.match(svg,/SYNTHETIC DEMO/);
   assert.match(svg,/<\/svg>\s*$/);
   assert.equal(svg.includes('class="travelling"'),animated);
@@ -85,7 +85,7 @@ test("many activities on one day are represented by bounded machines and an over
  const d=clone(fixture);
  d.activity.push(...[0,1,2,3].map(i=>({...d.activity[0],id:"extra"+i,repo_full_name:i%2?"sample-dev/atlas":"sample-dev/orbit",occurred_at:"2026-11-09T12:00:00Z"})));
  const svg=render(d,{selectedWeek:51});
- assert.match(svg,/\+2 more records \(1 stages\)/);
+ assert.match(svg,/\+1 more records \(1 stages\)/);
  assert.match(svg,/16 UNITS/);
  assert.equal(selectedModel(d).week.days[1].events.length,5);
 });
