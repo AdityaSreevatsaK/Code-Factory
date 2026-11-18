@@ -18,11 +18,11 @@ p{color:var(--muted);line-height:1.55}
 .deck{max-width:870px;margin-top:8px}
 .controls{display:flex;align-items:end;flex-wrap:wrap;gap:12px;margin:24px 0 12px}
 label{display:grid;gap:6px;font-size:.82rem;font-weight:700}
-select,button{border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--fg);padding:10px 12px;font:inherit;min-height:42px}
+select,button,input[type=file]{border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--fg);padding:10px 12px;font:inherit;min-height:42px}
 select#week{max-width:min(100%,380px)}
 button{cursor:pointer;font-weight:700}
 button:disabled{cursor:not-allowed;opacity:.45}
-select:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+select:focus-visible,button:focus-visible,input[type=file]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .week-jump{display:flex;gap:6px;align-items:end}
 .week-jump button{min-width:44px}
 figure{margin:0;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:clamp(6px,1.3vw,14px);overflow-x:auto;overflow-y:hidden}
@@ -52,15 +52,16 @@ a{color:var(--accent)}
 <main>
 <div class="kicker" id="sourceKicker">Public GitHub activity · @AdityaSreevatsaK</div>
 <h1>Code Factory</h1>
-<p class="deck">Explore <strong>@AdityaSreevatsaK’s observed public GitHub activity</strong> in a contribution-style calendar. Select a week using the chart or keyboard; its seven day cells directly power the miniature factory below. You can switch to the frozen November 2026 example or the synthetic demo. This is a partial public-events snapshot, not the official GitHub contribution calendar.</p>
+<p class="deck">Explore <strong>@AdityaSreevatsaK’s observed public GitHub activity</strong> in a contribution-style calendar. Select a week using the chart or keyboard; its seven day cells directly power the miniature factory below. Switch to the historical example or synthetic demo, or open any locally generated public snapshot without uploading it. This is a partial public-events snapshot, not the official GitHub contribution calendar.</p>
 <div class="controls" aria-label="Preview controls">
-  <label>Activity source<select id="dataset"><option value="account" selected>@AdityaSreevatsaK · refreshed</option><option value="historical">@AdityaSreevatsaK · historical example</option><option value="demo">Synthetic demo</option></select></label>
+  <label>Activity source<select id="dataset"><option value="account" selected>@AdityaSreevatsaK · refreshed</option><option value="historical">@AdityaSreevatsaK · historical example</option><option value="demo">Synthetic demo</option><option value="uploaded" disabled>Loaded local snapshot</option></select></label>
+  <label class="wide">Open your public snapshot (.json)<input id="fileInput" type="file" accept=".json,application/json" aria-label="Choose a local GitHub public-activity snapshot"></label>
   <label>Art direction<select id="layout"><option value="isometric">Isometric foundry</option><option value="pixel">Pixel works</option></select></label>
   <label>Theme<select id="theme"><option value="dark">Night shift</option><option value="light">Day shift</option></select></label>
   <label>Motion<select id="motion"><option value="still" selected>Still image</option><option value="animated">Subtle motion</option></select></label>
   <label>Preview zoom<select id="zoom"><option value="fit">Fit width</option><option value="detail">Readable detail</option></select></label>
   <label class="wide">Selected calendar week<select id="week" aria-label="Choose week to magnify"><option>Loading dates…</option></select></label>
-  <div class="week-jump"><button type="button" id="previous" aria-label="Previous week">◀</button><button type="button" id="next" aria-label="Next week">▶</button><button type="button" id="replay">Replay</button></div>
+  <div class="week-jump"><button type="button" id="previous" aria-label="Previous week">◀</button><button type="button" id="next" aria-label="Next week">▶</button><button type="button" id="replay">Replay</button><button type="button" id="downloadSvg" disabled>Download still SVG</button></div>
 </div>
 <p class="status" id="status" role="status">Loading source snapshot…</p>
 <p class="hint">On mobile, choose <strong>Readable detail</strong> and scroll the factory horizontally to inspect individual machines.</p>
@@ -68,7 +69,7 @@ a{color:var(--accent)}
 <div id="scene"><img src="exports/live-isometric-dark-still.svg" alt="Observed public activity of @AdityaSreevatsaK across 53 calendar-week columns, with a source-linked miniature factory for the latest observed week. Not official GitHub contribution totals."></div>
 <figcaption id="caption">Auto-refreshed public activity snapshot; the latest observed week powers seven event lanes.</figcaption>
 </figure>
-<div class="note"><strong id="noteSource">PUBLIC ACCOUNT SNAPSHOT</strong> · Coloured squares represent observed event/stage units, <strong>not official GitHub contribution totals</strong>. The highlighted column powers the seven corresponding day lanes. GitHub Actions refreshes the public data approximately every six hours, subject to API and scheduling availability. PR opening and merging are distinct events, and a sealed crate is <strong>not a deployment</strong>. No live GitHub requests, private repository data or API credentials are used by this preview.</div>
+<div class="note"><strong id="noteSource">PUBLIC ACCOUNT SNAPSHOT</strong> · Coloured squares represent observed event/stage units, <strong>not official GitHub contribution totals</strong>. The highlighted column powers the seven corresponding day lanes. GitHub Actions refreshes the public data approximately every six hours, subject to API and scheduling availability. PR opening and merging are distinct events, and a sealed crate is <strong>not a deployment</strong>. No live GitHub requests, private repository data or API credentials are used by this preview. Local files stay in your browser and are not uploaded.</div>
 <h2>Day-by-day ledger</h2>
 <p>The ledger explains exactly which input records power the seven workshop lanes.</p>
 <ul id="events" class="events" aria-label="Events in selected week"><li>Loading demo activity…</li></ul>
@@ -85,8 +86,8 @@ a{color:var(--accent)}
 <script type="module">
 import {render,selectedModel,calendarModel,dayMachines,TYPES} from "./calendar-factory.mjs";
 const $=id=>document.getElementById(id);
-const dataset=$("dataset"),layout=$("layout"),theme=$("theme"),motion=$("motion"),week=$("week"),zoom=$("zoom"),scene=$("scene"),status=$("status");
-let data,model,index;
+const dataset=$("dataset"),layout=$("layout"),theme=$("theme"),motion=$("motion"),week=$("week"),zoom=$("zoom"),scene=$("scene"),status=$("status"),fileInput=$("fileInput");
+let data,model,index,localSnapshot=null;
 const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const label=ms=>new Date(ms).toLocaleDateString("en-GB",{timeZone:"UTC",day:"numeric",month:"short",year:"numeric"});
 if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)motion.value="still";
@@ -109,10 +110,11 @@ function update(){
   const selected=selectedModel(data,index),w=selected.week;
   scene.innerHTML=render(data,{layout:layout.value,theme:theme.value,animated:motion.value==="animated",selectedWeek:index});
   scene.dataset.zoom=zoom.value;
-  const sourceText=data.source==="github"?"@"+data.user.login+" · "+(dataset.value==="account"?"scheduled":"historical")+" public snapshot · captured "+label(Date.parse(data.generated_at)):"Synthetic demo";
+  const sourceText=data.source==="github"?"@"+data.user.login+" · "+(dataset.value==="account"?"scheduled":dataset.value==="uploaded"?"locally loaded":"historical")+" public snapshot · captured "+label(Date.parse(data.generated_at)):"Synthetic demo";
   $("caption").textContent="Week "+label(w.start)+" to "+label(w.start+6*86400000)+" · "+w.records+" observed events · "+layout.options[layout.selectedIndex].text+" · "+sourceText;
   status.textContent="Select a calendar column or choose a week. "+w.records+" recorded events drive this workshop.";
   $("previous").disabled=index===0;$("next").disabled=index===52;
+  $("downloadSvg").disabled=false;
   renderLedger(selected);
 }
 for(const element of [layout,theme,motion,week])element.addEventListener("change",update);
@@ -139,6 +141,31 @@ scene.addEventListener("keydown",event=>{
 $("previous").addEventListener("click",()=>{week.value=String(Math.max(0,index-1));update();});
 $("next").addEventListener("click",()=>{week.value=String(Math.min(52,index+1));update();});
 $("replay").addEventListener("click",()=>{motion.value="animated";update();});
+fileInput.addEventListener("change",async()=>{
+  const selected=fileInput.files?.[0];if(!selected)return;
+  if(selected.size>4_000_000){status.textContent="Snapshot file is too large (4 MB maximum).";return;}
+  try{
+    const incoming=JSON.parse(await selected.text());
+    calendarModel(incoming);
+    if(incoming.source!=="github")throw Error("Choose a validated public GitHub snapshot");
+    localSnapshot=incoming;
+    const option=dataset.querySelector('option[value="uploaded"]');
+    option.disabled=false;
+    option.textContent="@"+incoming.user.login+" · local file";
+    dataset.value="uploaded";
+    await loadDataset();
+  }catch(error){status.textContent="Could not load local snapshot: "+String(error);}
+});
+$("downloadSvg").addEventListener("click",()=>{
+  if(!data)return;
+  const content=render(data,{layout:layout.value,theme:theme.value,selectedWeek:index,animated:false});
+  const handle=URL.createObjectURL(new Blob([content],{type:"image/svg+xml"}));
+  const a=document.createElement("a");
+  a.href=handle;
+  a.download="code-factory-"+(data.source==="github"?data.user.login.toLowerCase():"demo")+"-"+layout.value+"-"+theme.value+"-week-"+index+".svg";
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(handle),30000);
+});
 const SOURCES={
   account:{path:"data/live-public-activity.json",fallback:"exports/live-isometric-dark-still.svg"},
   historical:{path:"fixtures/adityasreevatsak-public-activity.json",fallback:"exports/account-isometric-dark-still.svg"},
@@ -146,13 +173,19 @@ const SOURCES={
 };
 let requestSerial=0;
 async function loadDataset(){
-  const current=++requestSerial,which=dataset.value,config=SOURCES[which];
-  status.textContent="Loading "+(which==="account"?"latest public account activity":which==="historical"?"historical public example":"synthetic demonstration")+"…";
+  const current=++requestSerial,which=dataset.value,config=SOURCES[which]??SOURCES.account;
+  status.textContent="Loading "+(which==="account"?"latest public account activity":which==="historical"?"historical public example":which==="uploaded"?"your local snapshot":"synthetic demonstration")+"…";
   week.disabled=true;
   try{
-    const response=await fetch(config.path,{cache:"no-store"});
-    if(!response.ok)throw Error("HTTP "+response.status);
-    const incoming=await response.json();
+    let incoming;
+    if(which==="uploaded"){
+      if(!localSnapshot)throw Error("No local snapshot selected");
+      incoming=localSnapshot;
+    }else{
+      const response=await fetch(config.path,{cache:"no-store"});
+      if(!response.ok)throw Error("HTTP "+response.status);
+      incoming=await response.json();
+    }
     const built=calendarModel(incoming);
     if(current!==requestSerial)return;
     data=incoming;model=built;
@@ -169,12 +202,12 @@ async function loadDataset(){
     const latestCompleted=built.weeks.filter(w=>w.index<52&&w.records>0).at(-1);
     week.value=String(which==="historical"?(latestCompleted?.index??built.defaultWeek):built.defaultWeek);
     week.disabled=false;
-    $("sourceKicker").textContent=which==="account"?"Scheduled public GitHub activity · @"+incoming.user.login:which==="historical"?"Historical public activity · @"+incoming.user.login:"Synthetic demonstration · no real GitHub data";
-    $("noteSource").textContent=which==="account"?"SCHEDULED PUBLIC SNAPSHOT":which==="historical"?"HISTORICAL PUBLIC SNAPSHOT":"SYNTHETIC DEMO";
+    $("sourceKicker").textContent=which==="account"?"Scheduled public GitHub activity · @"+incoming.user.login:which==="historical"?"Historical public activity · @"+incoming.user.login:which==="uploaded"?"Local public snapshot · @"+incoming.user.login:"Synthetic demonstration · no real GitHub data";
+    $("noteSource").textContent=which==="account"?"SCHEDULED PUBLIC SNAPSHOT":which==="historical"?"HISTORICAL PUBLIC SNAPSHOT":which==="uploaded"?"LOCAL PUBLIC SNAPSHOT":"SYNTHETIC DEMO";
     update();
   }catch(error){
     if(current!==requestSerial)return;
-    data=null;week.disabled=true;$("previous").disabled=true;$("next").disabled=true;
+    data=null;week.disabled=true;$("previous").disabled=true;$("next").disabled=true;$("downloadSvg").disabled=true;
     $("sourceKicker").textContent="Unable to load snapshot";
     scene.replaceChildren(Object.assign(document.createElement("img"),{src:config.fallback,alt:"Committed static Code Factory preview"}));
     status.textContent="Could not load selected activity snapshot: "+String(error)+". A committed static preview is shown.";

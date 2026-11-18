@@ -77,6 +77,8 @@ This collects public-only activity and writes a validated snapshot, four static 
 
 Alternatively, fork the repository and run **Actions → Generate Code Factory for a public username → Run workflow**, then download the generated artefact. Workflow execution does not commit, host, or publish anyone's files automatically, and does not edit their profile. In a public fork, anyone with permission to run workflows can use it.
 
+The browser preview also accepts a local public snapshot JSON using **Open your public snapshot** and can download a still SVG for the selected week and design. The chosen file is processed locally and is not uploaded.
+
 ## Quick start
 
 Requires **Node.js 20+** and optionally **Python 3.11+** for legacy artwork tests and the local preview server. No npm installation, paid service or GitHub token is required to render an existing snapshot.

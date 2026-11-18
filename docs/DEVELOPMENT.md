@@ -128,3 +128,7 @@ No release has been approved. Discuss a source licence with the owner before acc
 ## Generate for arbitrary users
 
 Run `node scripts/create-factory.mjs --username LOGIN --output output/LOGIN`, or use the manual GitHub Action in a fork. The offline `--snapshot` option supports tests and reproducible builds. Generated files are isolated from `data/live-public-activity.json` and `exports/`; no profile, source or repository files are changed. Embedded image URLs are relative until the user publishes the files or supplies a verified HTTPS image directory.
+
+## Local browser preview of arbitrary accounts
+
+`preview.html` supports opening a downloaded `public-activity.json` file via the browser file picker, without editing source or making live GitHub requests. After choosing a week, style and theme, `Download still SVG` exports the self-contained SVG. The file picker validates the shared snapshot contract and caps input size at 4 MB. Files are not uploaded.
