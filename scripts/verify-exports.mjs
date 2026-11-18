@@ -35,7 +35,7 @@ for(const {name,input,options} of expected) {
   const actual=readFileSync(path,"utf8").replace(/\r\n/g,"\n");
   const generated=render(input,options).replace(/\r\n/g,"\n");
   if(actual!==generated)throw Error("Stale SVG export: "+name+". Review and regenerate explicitly.");
-  if(!actual.startsWith("<svg")||!actual.endsWith("</svg>")||actual.includes("<script")||actual.includes("<foreignObject")){
+  if(!actual.startsWith("<svg")||!actual.trimEnd().endsWith("</svg>")||actual.includes("<script")||actual.includes("<foreignObject")){
     throw Error("Unsafe or malformed SVG export: "+name);
   }
   if(actual.length>150_000)throw Error("SVG exceeds size budget: "+name);
