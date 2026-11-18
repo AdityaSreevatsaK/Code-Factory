@@ -23,6 +23,8 @@ The second priority was showing the user's **real public account** rather than a
 
 ## Current repository layout and exact calls
 
+`factory-finish.mjs` is the pure deterministic detail layer, adding stage-specific machinery, active-only conveyors and reduced-motion-aware animation. Its output is part of the same byte-for-byte SVG export contract. Keep the 18 exports synchronised.
+
 `calendar-factory.mjs` exports:
 - `validSnapshot(input)`: strict normalisation, validation, dedup, UTC ordering.
 - `calendarModel(input)`: 53 Sunday-start week columns, 7 days per week, UTC snapshot-bound event aggregation.
@@ -33,7 +35,9 @@ The second priority was showing the user's **real public account** rather than a
 
 CLI `node calendar-factory.mjs [snapshot.json] [output-dir] [--week-index N]` generates eight base layout/theme/motion variants. Default input is `fixtures/demo-activity.json`; default output is `exports/` (do not run against committed assets accidentally when testing a changed renderer).
 
-`refresh-public-activity.mjs` exports `collect`, `assertDate`, `sourceRepo`; CLI takes `--username`, `--since`, `--output`. The collector only calls GitHub's public search and public owned default-branch commit endpoints. Optional `GITHUB_TOKEN` affects rate limits, not which data may be committed. Fails closed on incomplete API data.
+`scripts/create-factory.mjs` builds a separate account bundle from `--username` or an offline `--snapshot`, producing public JSON, four still SVGs and `README-embed.md`. It never changes the committed showcase. A manual forkable `.github/workflows/generate-any-user.yml` uploads a temporary ZIP artefact but never commits or publishes anything. The `preview.html` browser now accepts any local public snapshot and exports the selected still SVG without uploading the input.
+
+`refresh-public-activity.mjs` exports `collect`, `createRequester`, `assertDate`, `sourceRepo`; CLI takes `--username`, `--since`, `--output`. The collector only calls GitHub's public search and public owned default-branch commit endpoints. Optional `GITHUB_TOKEN` affects rate limits, not which data may be committed. Fails closed on incomplete API data.
 
 `preview.html` is a module-powered standalone local web page, **not** a GitHub Pages deployment. It defaults to the scheduled public account snapshot, with historical and demo switches, clickable/keyboard week selection, a seven-day event ledger, theme, style, zoom and motion controls. It never calls GitHub live.
 
@@ -77,7 +81,11 @@ npm run verify:exports
 python -m http.server 8000
 ```
 
-Preview at `http://localhost:8000/preview.html`. For a generic user, `node refresh-public-activity.mjs --username octocat --output fixtures/octocat-public-activity.json` uses the public GitHub API; note collection may fail on rate limits or pagination, and no private repos may be queried.
+Preview at `http://localhost:8000/preview.html`. For a generic user, run `node scripts/create-factory.mjs --username octocat --output output/octocat`. It produces images and Markdown without source edits; use `--snapshot` for offline JSON inputs. API rate limits and public pagination errors fail closed. The optional manual GitHub Action requires workflow execution rights (normally through the user's fork).
+
+## November 2026 branch implementation state
+
+Draft PR #1 on `feat/public-coverage-and-factory-density` adds the data-coverage audit, public-only repository recheck, logarithmic calendar intensity, machine-priority selection, original source-backed working artwork and reusable username workflows. Its latest code must pass Node, Python/XML and deterministic 18-export validation on both Ubuntu and Windows before merge. Leave `master`, the live profile, source licence and release tags unchanged during review. The historical fixture still needs visibility/privacy assessment before an open-source release.
 
 ## Verification state at migration
 
@@ -96,7 +104,7 @@ P0: Exercise native Linux and Windows CI after migration; resolve actual issues.
 
 P1: Improve selected-day legibility under a real dense account (hundreds of records in a week), including an accessible overflow drill-down and trustworthy heatmap legend. Ensure distinct low- versus high-count activity intensity.
 
-P1: Public account onboarding: accept any username safely, make a reproducible refresh and SVG export guide, handle search pagination limits transparently and keep snapshots out of accidental commits.
+P1: Improve usability of completed generic username bundles: test unusual account sizes and failures, inspect exported images on GitHub desktop/mobile and document screenshot evidence. Generic CLI, temporary-action artefacts and local browser JSON preview are implemented; none are hosted automatically.
 
 P2: Accessibility audits, offline screenshot tests, size-performance budgets, output presets for profile README use, optional GIF generation with correct licensing and no animation in the static SVG.
 
