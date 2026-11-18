@@ -22,6 +22,15 @@ Code Factory is an experimental concept with a working renderer, public capture 
 - [ ] Add visual screenshot regression tests that remain offline and deterministic.
 - [ ] Confirm selected-week focus, contrast and reduced-motion behaviour.
 
+### November 2026 data-integrity and visual-density work
+
+- [x] Reconcile the 1,219-versus-894 public snapshot discrepancy by exact source IDs and document the missing-repository cause and uncertainty.
+- [x] Add unauthenticated public-visibility rechecks for previously observed owned repositories, without retaining or accessing private activity.
+- [x] Add a logarithmic five-level yearly activity colour scale and source-backed daily production gauges.
+- [x] Prioritise highest-volume source machines when only two groups fit in one workshop.
+- [ ] Inspect the new branch artwork on GitHub desktop and mobile, especially label crowding and high-density days.
+- [ ] Review historical fixture repository visibility before the first public release; Git history requires separate consideration.
+
 ## Phase 2 | Public-data and generic user experience
 
 - [ ] Formalise public-only collection semantics, including API search caps and partial data warnings.

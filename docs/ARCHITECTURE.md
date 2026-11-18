@@ -70,6 +70,14 @@ It handles GitHub search limits, page boundaries, malformed responses and API fa
 
 This public-REST strategy does **not** obtain GitHub's authoritative per-day contribution count. It generally misses commits only on feature branches, some external organisation/upstream work, restricted activity and private data. A PR open and merge are independent observed stages even when GitHub credits them differently. Document these omissions prominently.
 
+## Coverage reconciliation and adaptive activity
+
+GitHub's `/users/:login/repos` public listing may temporarily omit an owned repository that remains publicly accessible. The collector now accepts **previously public names as candidates only** from the last live snapshot and an optional frozen public baseline. For each omitted owned repository, it performs a **new public metadata request without bearer credentials**, and scans its commits only if its current ownership and `visibility: "public"` are independently confirmed. Missing/private candidates are excluded, and API failures abort the refresh without replacing the last validated snapshot.
+
+Use `npm run audit:coverage` to compare event IDs across two captures. The [November 2026 discrepancy report](DATA_COVERAGE_AUDIT.md) records an exact reconciliation, not an assumption about GitHub's contribution counts.
+
+The calendar model stores `peakUnits` across all visible days. The renderer's `calendarIntensity(units,peakUnits)` maps 0 to an empty tier and non-zero activity to five **logarithmically spaced** colour tiers. A 1-unit day remains distinct from high-volume activity even when daily counts exceed 100. Each selected-week lane has a matching five-segment load indicator, while the two visible machines on a dense day are prioritised by actual source-backed units and record counts. Hidden groups still contribute to the calendar and are explicitly disclosed.
+
 ## Browser architecture
 
 `preview.html` is intentionally framework-free. It imports `calendar-factory.mjs`, fetches only **same-repository local fixture JSON**, and embeds the freshly rendered SVG into the page. Users can switch between the dated account dataset and the synthetic demo, choose a week with chart clicks or keyboard, inspect a seven-day ledger, change layout/theme/motion and zoom horizontally on mobile.
