@@ -113,7 +113,7 @@ async function collect({request,now=new Date(),since,login=ACCOUNT,previousPubli
   if(!Array.isArray(previousPublicRepositories)||previousPublicRepositories.length>5000)throw Error("Invalid previous public repository hints");
   let recheckedPublic=0,unavailableCount=0;
   const prior=new Set(previousPublicRepositories.filter(full=>typeof full==="string"&&
-    /^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$/.test(full)&&
+    /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(full)&&
     full.split("/")[0].toLowerCase()===login.toLowerCase()));
   for(const full of [...prior].sort()){
     if(ownedPublic.has(full))continue;
