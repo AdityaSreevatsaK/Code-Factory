@@ -26,7 +26,7 @@ All **25** concept files from `concepts/code-factory/` were inspected. Source co
 | `shared/fixtures/demo-activity.json` | `fixtures/demo-activity.json` | Exact source demo fixture carried over |
 | Original concept README | New root `README.md` | Re-authored for public standalone audience; account preview retained first |
 
-The original source branch and PR are historical references and should not be used for ongoing Code Factory feature work after successful migration. This migration does **not** require merging into GitHub Activity Studio's `master` or editing its other concepts.
+The original source branch and now-closed PR are historical references and should not be used for ongoing Code Factory feature work after successful migration. This migration does **not** require merging into GitHub Activity Studio's `master` or editing its other concepts.
 
 ## New standalone infrastructure
 
@@ -43,6 +43,6 @@ The synthetic fixture is unchanged. The public account snapshot remains the date
 - Verify all 14 SVGs reproduce from their known inputs.
 - Exercise the interactive preview and generic collector on a real browser/Windows installation.
 - Inspect new repository CI and default branch.
-- Only after successful handover, mark the old draft PR as superseded. Avoid deleting source code or erasing original provenance without approval.
+- [x] The original draft PR #5 was closed **without merging** on 18 November 2026, with a comment linking to this repository and the migration baseline. The original source branch remains intact.
 
 **Source history note:** This is a clean standalone repository history with an explicit trace to the original SHA/PR. Git commit ancestry was not automatically transplanted across repositories. The source branch preserves the earlier development history.

@@ -11,6 +11,7 @@ All significant Code Factory milestones are documented here. No release version 
 - Added comprehensive `AGENTS.md`, AI handover, architecture, design, data contract, development, migration and contributor/security documentation.
 - Added zero-dependency Node scripts, deterministic SVG asset verification, Windows PowerShell helper, and GitHub Actions CI on Windows and Linux.
 - Maintained truthful public-event semantics; no official-contribution totals, private data, live profile edits, release tags or licence selection.
+- Verified the migration in GitHub Actions on both Ubuntu and Windows; closed the superseded Activity Studio draft PR without merging or deleting the source branch.
 
 ### Earlier concept history
 

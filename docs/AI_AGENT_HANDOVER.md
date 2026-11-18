@@ -7,7 +7,7 @@
 - **Canonical repository:** https://github.com/AdityaSreevatsaK/Code-Factory
 - **Origin:** https://github.com/AdityaSreevatsaK/GitHub-Activity-Studio
 - **Origin development branch:** `concept/code-factory`
-- **Origin draft PR:** https://github.com/AdityaSreevatsaK/GitHub-Activity-Studio/pull/5
+- **Origin draft PR, closed as superseded without merging:** https://github.com/AdityaSreevatsaK/GitHub-Activity-Studio/pull/5
 - **Source migration baseline SHA:** `fa69aad0e994d82924685d6e7291dde34f7505ae`
 - **Migration date:** 18 November 2026
 - **Primary owner/account showcase:** `AdityaSreevatsaK`
@@ -81,7 +81,7 @@ Preview at `http://localhost:8000/preview.html`. For a generic user, `node refre
 
 ## Verification state at migration
 
-Earlier source sessions executed **37 JavaScript regression scenarios in isolated JavaScript harnesses** and byte-compared 14 current SVG assets. This is meaningful but **not a substitute for native Node/Python/Windows/browser validation**. New offline CI and exact output checks have been added to the independent repo. Inspect the GitHub Actions results rather than asserting them passed without evidence. A known accuracy boundary is that the calendar represents observed event units, not authoritative total contributions.
+Earlier source sessions executed **37 JavaScript regression scenarios in isolated JavaScript harnesses** and byte-compared 14 current SVG assets. This is meaningful but **not a substitute for native Node/Python/Windows/browser validation**. New offline CI and exact output checks have been added to the independent repo. GitHub Actions completed successfully on Ubuntu and Windows for migration commit `777b76b5d8273f2e408afd18548e3404ce58984c` (18 November 2026). Continue checking CI for any new commit rather than assuming subsequent work passes. A known accuracy boundary is that the calendar represents observed event units, not authoritative total contributions.
 
 ## Workstream boundaries
 

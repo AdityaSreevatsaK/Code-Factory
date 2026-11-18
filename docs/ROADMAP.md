@@ -9,7 +9,7 @@ Code Factory is an experimental concept with a working renderer, public capture 
 - [x] Preserve and isolate the original Python renderer.
 - [x] Add comprehensive AI-agent, architectural, development and migration documentation.
 - [x] Add no-dependency Node scripts, offline Windows/Linux CI and SVG reproduction checks.
-- [ ] Observe green GitHub Actions runs on both operating systems.
+- [x] Observe green GitHub Actions runs on both operating systems (18 November 2026).
 - [ ] Verify the native Windows PowerShell helper and browser preview manually.
 - [ ] Confirm a generic public username collection and rendering end-to-end.
 
@@ -48,7 +48,7 @@ No automatic GitHub profile edits, no private repository collection, no fake con
 - Source licence (e.g. MIT or Apache-2.0), which grants reuse rights.
 - Public release/tag strategy and repository distribution.
 - Any hosted preview, scheduled public refresh, image publication or profile integration.
-- Closing or deleting the old concept branch and PR beyond documenting successful migration.
+- Deleting the old concept branch: draft PR #5 has already been closed as superseded, without merging. Retain the original branch until the owner explicitly authorises deletion.
 
 ## Definition of done for next milestone
 
