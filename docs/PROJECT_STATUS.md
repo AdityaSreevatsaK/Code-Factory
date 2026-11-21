@@ -8,7 +8,7 @@
 | --- | --- |
 | Repository | [AdityaSreevatsaK/Code-Factory](https://github.com/AdityaSreevatsaK/Code-Factory), public |
 | Default branch | `master` |
-| Latest master commit at audit | `f0fd7be75adce1820c1f0c720e1d49fb865efd66`, scheduled data refresh, 21 Nov 2026 |
+| Latest live-data refresh commit | `f0fd7be75adce1820c1f0c720e1d49fb865efd66`, scheduled data refresh, 21 Nov 2026 |
 | Latest live snapshot | `2026-11-21T07:14:17Z` |
 | Live snapshot size | **2,178 observed records** across **41 represented repositories** |
 | Last successful refresh | [Run #44879286235](https://github.com/AdityaSreevatsaK/Code-Factory/actions/runs/44879286235) |
