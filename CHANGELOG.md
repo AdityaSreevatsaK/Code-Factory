@@ -2,6 +2,13 @@
 
 All significant Code Factory milestones are documented here. No release version or Git tag has been published.
 
+## Unreleased | State-aware documentation, 21 November 2026
+
+- Added mandatory live Git/worktree/branch/PR/CI inspection instructions for AI agents, with evidence-based implementation-state labels.
+- Added a dated project-status matrix and updated the handover, architecture, data contract, development, security, contributor and roadmap documentation.
+- Documented the distinction between `master` and PR #1, current snapshot drift, known data limitations and previous technical failures.
+- Expanded the Windows PowerShell verifier to run the complete `npm test` suite, not only the original three test files.
+
 ## Under review | Draft PR #1, public coverage, visual overhaul and reusable account bundles
 
 Implemented on `feat/public-coverage-and-factory-density`, not merged to `master`:
