@@ -85,13 +85,9 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Live public SVG regeneration failed.' }
     }
 
-    Write-Host 'Running Node.js regression tests...' -ForegroundColor Cyan
-    & node --test (Join-Path $tests 'test_calendar_factory.mjs')
-    if ($LASTEXITCODE -ne 0) { throw 'Node.js rendering regression tests failed.' }
-    & node --test (Join-Path $tests 'test_public_refresh.mjs')
-    if ($LASTEXITCODE -ne 0) { throw 'Node.js public collector regression tests failed.' }
-    & node --test (Join-Path $tests 'test_live_generation.mjs')
-    if ($LASTEXITCODE -ne 0) { throw 'Node.js live publication regression tests failed.' }
+    Write-Host 'Running all Node.js regression tests...' -ForegroundColor Cyan
+    & npm test
+    if ($LASTEXITCODE -ne 0) { throw 'Node.js regression tests failed.' }
 
     Write-Host 'Running Python SVG integrity tests...' -ForegroundColor Cyan
     & python -m unittest discover -s $tests -v

@@ -1,117 +1,104 @@
-# AI agent handover | standalone Code Factory
+# AI agent handover | Code Factory
 
-> Read `/AGENTS.md` first. This document is for handovers between autonomous coding sessions. It records the project's real history, interfaces, constraints and next work so new agents do not restart obsolete ideas or make false assumptions.
+> Start with `/AGENTS.md` and `docs/PROJECT_STATUS.md`. This document preserves the product history, technical decisions and lessons that are easy to lose between sessions. It is not a substitute for inspecting the live repository and Git state.
 
-## Identity and provenance
+## Project identity and history
 
-- **Canonical repository:** https://github.com/AdityaSreevatsaK/Code-Factory
-- **Origin:** https://github.com/AdityaSreevatsaK/GitHub-Activity-Studio
-- **Origin development branch:** `concept/code-factory`
-- **Origin draft PR, closed as superseded without merging:** https://github.com/AdityaSreevatsaK/GitHub-Activity-Studio/pull/5
-- **Source migration baseline SHA:** `fa69aad0e994d82924685d6e7291dde34f7505ae`
-- **Migration date:** 18 November 2026
-- **Primary owner/account showcase:** `AdityaSreevatsaK`
-- **Product description:** source-backed public GitHub activity rendered as a contribution-calendar-powered miniature factory, isometric and pixel styles, dark/light, still/optional browser animation, and offline tests.
-- **Operating system target:** Windows + PowerShell, no WSL dependency; CI additionally covers Linux.
-- **Runtime:** Node 20+, Python 3.11+ for legacy/export integrity tests. Node built-ins only, no npm install and no paid API.
+- Canonical repository: https://github.com/AdityaSreevatsaK/Code-Factory
+- Owner/account showcase: `AdityaSreevatsaK`
+- Original home: https://github.com/AdityaSreevatsaK/GitHub-Activity-Studio
+- Original branch: `concept/code-factory`
+- Original draft PR #5: https://github.com/AdityaSreevatsaK/GitHub-Activity-Studio/pull/5, closed as superseded without merging
+- Source migration baseline: `fa69aad0e994d82924685d6e7291dde34f7505ae`
+- Standalone migration: 18 November 2026. The source project was inspected, 25 concept files were reviewed, 14 SVGs and fixtures were migrated, and the retired Python prototype was isolated under `legacy/`. This repository has its own clean Git history; the source branch remains the historical reference.
 
-## What failed in the original concept
+The original project vision was a visually distinctive, contribution-calendar-powered miniature factory. The first concept placed an attractive factory below the calendar without a real relationship to activity. That was rejected. The defining revision made the selected calendar week drive seven daily lanes: actual events determine the machine, day, repository, cargo and counts. Idle days stay idle. This source lineage is the central product invariant.
 
-The first prototype put attractive miniature machines below a calendar but did not actually connect the machines to daily activity. The user explicitly rejected that. The corrected design is **calendar-first**: the highlighted column expands into seven daily workshop lanes. A source event runs its corresponding factory stage on its corresponding day; inactive days do not animate or manufacture. The calendar and factory share one normalised data model. Do **not** revert to an unrelated factory beneath the heatmap.
+The design evolved around two genuinely different visual directions, **Isometric Foundry** and **Pixel Works**, each with dark/light palettes. GitHub profile images must be static SVGs; animation is an optional local-browser enhancement. The browser preview provides interactive week exploration and an event ledger. A synthetic fixture remains separate from real public snapshots.
 
-The second priority was showing the user's **real public account** rather than an invented demo. A public-only GitHub snapshot and four account-specific SVGs were committed; demo art remains separate. Neither is GitHub's official contributions count.
+## Product and technical decisions
 
-## Current repository layout and exact calls
+1. The calendar is 53 Sunday-start weeks by seven days. The selected week drives seven workshop lanes.
+2. Renderer input is a normalised v1 JSON snapshot, not raw API responses.
+3. Renderer code is deterministic, browser-safe and dependency-free. Node filesystem/network work stays in CLI modules.
+4. Repository identity is canonical `owner/name`; timestamps and week assignment are UTC.
+5. Five event kinds are understood by the renderer: `commit`, `pr_opened`, `pr_merged`, `issue_opened`, `release`. The built-in collector currently fetches only commits, PRs and issues.
+6. Same-repository/same-stage/day records group into a machine. The artwork displays at most two groups per day and discloses overflow; all valid events remain in the data model.
+7. The output is an observed public activity visualisation, not GitHub's official contribution graph. A PR open and merge are separate observed records; a blank day is not proof of zero contributions.
+8. Still SVGs are the GitHub-compatible deliverable. Do not promise GitHub README rendering of SMIL/browser animation.
+9. Original procedural SVG geometry is preferred. Do not copy game sprites, proprietary fonts or branded artwork.
+10. No automatic profile edits, cloud hosting requirement, private data collection or release publication.
 
-`factory-finish.mjs` is the pure deterministic detail layer, adding stage-specific machinery, active-only conveyors and reduced-motion-aware animation. Its output is part of the same byte-for-byte SVG export contract. Keep the 18 exports synchronised.
+## Architecture and stack
 
-`calendar-factory.mjs` exports:
-- `validSnapshot(input)`: strict normalisation, validation, dedup, UTC ordering.
-- `calendarModel(input)`: 53 Sunday-start week columns, 7 days per week, UTC snapshot-bound event aggregation.
-- `selectedModel(input, weekIndex?)`: chooses week 0..52 or recent active default; exposes `week`, `weekIndex`, `activeRepos`, `stages`.
-- `dayMachines(day)`: group same repository/event kind on a day and preserve record IDs/total units.
-- `render(input,{layout,theme,animated,selectedWeek})`: deterministic 1200x430 standalone SVG.
-- `TYPES`: event-stage mapping and colours.
+- **Node.js 20+**, ECMAScript modules, Node built-in test runner and no third-party runtime dependencies.
+- **Python 3.11+ standard library** for legacy prototype tests and SVG/XML integrity checks.
+- **Browser:** vanilla HTML/CSS/ES modules, local HTTP server, no framework or authenticated browser API.
+- **Data:** GitHub REST public search for authored PRs/issues and public owned default-branch commits. Snapshot schema v1 stores event IDs, repository full names, UTC timestamps, event kinds, counts, coverage and provenance.
+- **Assets:** deterministic standalone SVGs, 1200 × 430, isometric/pixel, dark/light, still/optional browser animation.
+- **CI:** GitHub Actions on Ubuntu and Windows, Node 20 and Python 3.11, read-only and offline.
+- **Refresh:** approved six-hour workflow on `master`, using the built-in token for public-only collection and committing one JSON snapshot plus four live stills after verification.
+- **Packaging:** `package.json` is `private: true`, `UNLICENSED`; there is no source licence or stable release.
 
-CLI `node calendar-factory.mjs [snapshot.json] [output-dir] [--week-index N]` generates eight base layout/theme/motion variants. Default input is `fixtures/demo-activity.json`; default output is `exports/` (do not run against committed assets accidentally when testing a changed renderer).
+The current tree, exact commands and branch state are in `docs/PROJECT_STATUS.md`. Do not copy old file maps or package scripts without checking `package.json` and the current tree.
 
-`scripts/create-factory.mjs` builds a separate account bundle from `--username` or an offline `--snapshot`, producing public JSON, four still SVGs and `README-embed.md`. It never changes the committed showcase. A manual forkable `.github/workflows/generate-any-user.yml` uploads a temporary ZIP artefact but never commits or publishes anything. The `preview.html` browser now accepts any local public snapshot and exports the selected still SVG without uploading the input.
+## Public-data discrepancy and audit
 
-`refresh-public-activity.mjs` exports `collect`, `createRequester`, `assertDate`, `sourceRepo`; CLI takes `--username`, `--since`, `--output`. The collector only calls GitHub's public search and public owned default-branch commit endpoints. Optional `GITHUB_TOKEN` affects rate limits, not which data may be committed. Fails closed on incomplete API data.
+The frozen historical snapshot captured on 17 November 2026 contains **1,219 observed event/stage records across 26 repositories**. The first scheduled refresh on 18 November contained **894 records across 32 repositories**. Exact event-ID reconciliation found 457 historical IDs absent from the refreshed snapshot and 132 new IDs.
 
-`preview.html` is a module-powered standalone local web page, **not** a GitHub Pages deployment. It defaults to the scheduled public account snapshot, with historical and demo switches, clickable/keyboard week selection, a seven-day event ledger, theme, style, zoom and motion controls. It never calls GitHub live.
+**455 of the 457 missing records** were associated with `AdityaSreevatsaK/Taiyous-Personal-Library`: 373 commits, 43 PR openings, 38 merges and one issue. The repository was absent from the first refresh's public-owned repository listing, although GitHub identified it as public during the later audit. The exact cause of the earlier omission is not proven. The other two missing records were PR-opening events. This was a repository-discovery/visibility-timing problem, not evidence that the source events had been deleted.
 
-`exports/`: 8 standard demo variants; 2 demo historical static scenes, selected weeks 48 and 45; 4 personal account stills, selected week 51. Read `scripts/verify-exports.mjs` for the canonical filename and input selection matrix. The static SVGs are deliberately usable as Markdown image embeds on GitHub.
+The review branch adds a safeguard: previous public repository names are only candidate hints; each missing repository is rechecked through anonymous GitHub metadata, and it is scanned only when current ownership and public visibility are confirmed. Private, missing or ambiguous candidates are excluded. Public API failures abort the refresh. The historical baseline is never copied into new activity. An offline ID audit helps explain differences. These changes do not make the public collector complete or authoritative.
 
-`legacy/factory.py` is the original pre-calendar art. It is **not** authoritative and cannot overwrite the current export directory by default. Keep isolated or remove only after an explicit documented decision.
+The current default-branch snapshot is newer than the PR branch snapshot. See `docs/PROJECT_STATUS.md` for the exact generated timestamps and counts. Never compare counts without considering snapshot windows, event IDs and coverage metadata.
 
-## Public data truth and caveats
+## Known limitations
 
-The dated `fixtures/adityasreevatsak-public-activity.json` snapshot was gathered from GitHub REST public search and authored commits on public owned default branches. At collection it contained **1,219 observed records/stages across 26 repositories**, including **499 commits, 332 PR opens, 273 PR merges, 115 issue opens**. The account previews highlight the complete week of 8–14 November 2026, containing **652 observed events**.
+- Public search and default-branch commit scans are incomplete by design. Feature branches, some upstream/organisation contributions and all private activity are outside scope.
+- GitHub Search has a 1,000-result cap per query. Incomplete pagination or API failures must not produce a partial publication.
+- The collector does not currently fetch GitHub release events, even though the renderer schema can display a release record supplied by another source.
+- Public visibility can change; historical public fixtures and Git history need privacy review before a broad release.
+- A generated Markdown snippet needs publicly hosted SVGs to work in a profile README. The tool does not host images or edit profiles.
+- No visual browser screenshot/regression suite has been added yet. CI validates code, XML, deterministic SVG bytes and platform behaviour, not human visual quality.
+- No source licence, package publication, stable version, GitHub Pages deployment or profile integration has been approved.
 
-These are **not GitHub's official contribution totals**. PR opening/merging count separately, feature branches and some upstream contributions are missing, and GitHub search may omit other activity. The demo is sparse and **synthetic**. A blank public grid square means no observed input, not proven zero activity. Do not secretly supplement, estimate or adjust counts to make the artwork appear busier.
+## Failures, challenges and lessons learnt
 
-The separately authorised six-hour refresh is now active (`.github/workflows/refresh-activity.yml`). It updates `data/live-public-activity.json` and four `exports/live-*` SVGs without changing frozen fixtures. The selected week is the latest observed active week, including the current week. Failed runs publish nothing.
+- **Disconnected factory concept:** visually attractive but not source-driven. Replaced with selected-week-to-seven-lanes model. Never regress to decorative, fabricated machinery.
+- **Public repository discovery gap:** one omitted repository accounted for 455 missing historical events. A successful API response is not proof that repository discovery was complete. Reconcile IDs and verify omitted repositories independently.
+- **Heatmap saturation:** an absolute threshold made 11 and 100 units look alike. The review branch calibrates intensity logarithmically against observed peak units and ranks the two visible machine groups by actual units.
+- **SVG finish integration:** an initial isometric SVG markup matcher failed to decorate the isometric machines. The matcher was made tolerant of whitespace/attribute variation and the exports were regenerated. Always test both art directions, not only pixel output.
+- **SVG size budget:** detailed machinery exceeded the old 150 KB limit. The test budget was raised to 180 KB while retaining a hard bound.
+- **Windows command handling:** relying on shell wildcard expansion for Node tests was unreliable on Windows. Keep test file paths explicit in `package.json`; use the same `npm test` entry point from PowerShell.
+- **Branch drift:** the six scheduled refresh commits after the PR's merge base changed only the live JSON snapshot and four live SVGs. The feature branch therefore has a stale live capture. Before merging, bring it up to date and regenerate live assets with the feature renderer, then re-run all verification.
+- **Documentation drift:** historical handover notes and green Actions runs can become stale. Re-check current branch, code, tests, workflows and run SHA before every substantial task.
 
-## Core engineering decisions
-
-1. Deterministic SVG, original procedural geometry, zero external fonts/images or trackers.
-2. 53 by 7 calendar; 1200 by 430 landscape artwork.
-3. Isometric Foundry vs Pixel Works, light/dark palettes, distinct geometry and floors.
-4. Five source-supported event stage machines. Releases only when release events exist.
-5. Day lanes capped to two distinct machines, with explicit overflow disclosure. All events contribute to the calendar cells even when machines are visually abbreviated.
-6. Machines, signal lines and static/animated parcels share source event identities; a PR-merge crate does not claim deployment.
-7. Label escape, XML-safe characters and bounded inputs; per-repository `full_name` identity.
-8. Browser keyboard navigation, reduced-motion preference, optional zoom and local HTTP server.
-9. Still SVG for GitHub README; do not claim GitHub renders embedded SMIL animation.
-10. Reproducible assets verified against exact deterministic render output.
-
-## Commands for a fresh agent session
+## Working commands
 
 ```powershell
-git clone https://github.com/AdityaSreevatsaK/Code-Factory.git
-cd Code-Factory
-git status --short
 node --version
 python --version
 npm test
 python -m unittest discover -s tests -v
 npm run verify:exports
+npm run verify:live
 .\verify.ps1
 python -m http.server 8000
 ```
 
-Preview at `http://localhost:8000/preview.html`. For a generic user, run `node scripts/create-factory.mjs --username octocat --output output/octocat`. It produces images and Markdown without source edits; use `--snapshot` for offline JSON inputs. API rate limits and public pagination errors fail closed. The optional manual GitHub Action requires workflow execution rights (normally through the user's fork).
+The browser preview is `http://localhost:8000/preview.html`. Use a separate output folder when rendering a user snapshot. On the review branch, also inspect `npm run audit:coverage`, `npm run create` and the manual any-user workflow; those features are not on `master` until PR #1 merges.
 
-## November 2026 branch implementation state
+## Current workstreams and ownership gates
 
-Draft PR #1 on `feat/public-coverage-and-factory-density` adds the data-coverage audit, public-only repository recheck, logarithmic calendar intensity, machine-priority selection, original source-backed working artwork and reusable username workflows. Its latest code must pass Node, Python/XML and deterministic 18-export validation on both Ubuntu and Windows before merge. Leave `master`, the live profile, source licence and release tags unchanged during review. The historical fixture still needs visibility/privacy assessment before an open-source release.
+- **Default branch:** scheduled public showcase and baseline renderer/collector are active.
+- **PR #1:** data-coverage safeguards, adaptive intensity, richer stage machinery, any-username bundle, manual workflow and local snapshot preview are under review, not shipped.
+- **Before merge:** synchronise the live snapshot/assets, run current CI, inspect desktop/mobile visuals, and review historical fixture plus Git history for privacy.
+- **Next:** accessibility and visual regression evidence, high-density readability, robust error UX and contributor onboarding.
+- **Deferred:** GitHub profile integration, GIF generation and first stable release until data and visual work are substantially improved.
+- **Owner approval required:** source licence, release/tag/packaging, profile edits, visibility changes, history rewriting or publishing destinations.
 
-## Verification state at migration
+Keep this handover concise and update it when an implementation decision or milestone changes. For the live status, update `docs/PROJECT_STATUS.md` rather than adding another dated status paragraph here.
 
-Earlier source sessions executed **37 JavaScript regression scenarios in isolated JavaScript harnesses** and byte-compared 14 historical SVG assets; four additional account SVGs now update through scheduled automation. This is meaningful but **not a substitute for native Node/Python/Windows/browser validation**. New offline CI and exact output checks have been added to the independent repo. GitHub Actions completed successfully on Ubuntu and Windows for migration commit `777b76b5d8273f2e408afd18548e3404ce58984c` (18 November 2026). Continue checking CI for any new commit rather than assuming subsequent work passes. A known accuracy boundary is that the calendar represents observed event units, not authoritative total contributions.
+## Fresh-agent instruction
 
-## Workstream boundaries
-
-- **Allowed:** Code Factory renderer, data adapters, layouts, browser preview, CLI, tests, assets, documentation, build tooling, accessibility, security.
-- **Not allowed without explicit approval:** other GitHub Activity Studio concepts; profile README; cloud deployment; private activity collection; changes to GitHub repository visibility, tags, release publication or licence.
-- **Avoid:** installing a framework solely for decoration; hardcoding personal usernames in generic rendering paths; adding unsupported GitHub contribution claims; replacing readme stills with unverified animations.
-- **Before a PR:** verify all exported SVGs match current renderer, include clear screenshots/descriptions and no credentials.
-
-## Next prioritised backlog
-
-P0: Exercise native Linux and Windows CI after migration; resolve actual issues. Check browser interaction and mobile detail zoom using Chrome/Edge, document screenshots/proof. Verify all README links and the generic `--username` collector.
-
-P1: Improve selected-day legibility under a real dense account (hundreds of records in a week), including an accessible overflow drill-down and trustworthy heatmap legend. Ensure distinct low- versus high-count activity intensity.
-
-P1: Improve usability of completed generic username bundles: test unusual account sizes and failures, inspect exported images on GitHub desktop/mobile and document screenshot evidence. Generic CLI, temporary-action artefacts and local browser JSON preview are implemented; none are hosted automatically.
-
-P2: Accessibility audits, offline screenshot tests, size-performance budgets, output presets for profile README use, optional GIF generation with correct licensing and no animation in the static SVG.
-
-P2: Review licence choice with owner, security documentation, contribution policy, tags, packaging and release automation. Do not publish a first stable release automatically.
-
-## Suggested agent session start prompt
-
-> You are taking ownership of Code Factory in `AdityaSreevatsaK/Code-Factory`. Read `AGENTS.md`, `docs/AI_AGENT_HANDOVER.md`, `docs/ARCHITECTURE.md`, `docs/DATA_CONTRACT.md` and the existing tests. Work only on Code Factory. Treat activity lineage and public-data provenance as hard correctness requirements. Run available tests, verify all SVGs, and commit narrow changes. Never modify another concept, private GitHub activity, profile README, release tags, licence or visibility without explicit permission. Start with the highest priority unverified native CI/browser work, then proceed through the scoped backlog.
-
-Keep this document up to date when completing a milestone or changing an interface; it is a durable handover, not a marketing statement.
+> First inspect the current checkout, worktree, branches, recent Git history, default branch, open PRs and Actions checks. Read `AGENTS.md`, `docs/PROJECT_STATUS.md` and the relevant technical docs. Build an evidence-backed implemented/partial/planned/deprecated/unverified matrix from code, tests and workflows. Preserve user changes. Work only on Code Factory, preserve public-only provenance and deterministic exports, run the real tests, update the status/docs, and report exact remaining gaps. Never assume a prior summary or unmerged PR is the current default-branch implementation.

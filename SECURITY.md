@@ -32,6 +32,10 @@ The collector may use historical public snapshots as **candidate repository name
 
 Historical fixtures can become sensitive if a previously public repository later becomes private or disappears. Before a public release, audit *all historical examples and Git history* for names, URLs and source details that should no longer be published. Removing a file in a later commit does **not** erase it from Git history. Seek the owner's approval before any history rewrite.
 
+## Release-event coverage
+
+The renderer can display a validated `release` record, but the built-in collector currently gathers public PRs, issues and authored default-branch commits only. Do not claim the collector provides release coverage.
+
 ## Important known boundaries
 
 The public REST strategy is **not equivalent to GitHub's official contribution calendar**. Do not represent blanks as authenticated zeroes, PR merges as deployments, or observed event units as GitHub's contribution totals.

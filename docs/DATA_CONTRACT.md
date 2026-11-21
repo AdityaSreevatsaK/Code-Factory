@@ -61,7 +61,7 @@ This example is illustrative; it is **not** a GitHub official contributions reco
 - `pr_opened`: assembly arm. PR creation is not a merge.
 - `pr_merged`: sealing press. Merge does **not** imply deployment or release.
 - `issue_opened`: inspection lens. Issue creation does not prove a defect.
-- `release`: dispatch crane. Only actual recorded release events may trigger it.
+- `release`: dispatch crane. Only actual recorded release events may trigger it. The current built-in GitHub collector does not harvest releases; this kind is available to snapshots produced by another explicitly documented source.
 
 A day may contain several records; `dayMachines` combines identical repository + kind combinations into one station, totalling their recorded units. It draws no more than two distinct stations per day; the remainder is disclosed in the artwork and complete in the data model.
 

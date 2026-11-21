@@ -2,6 +2,17 @@
 
 All significant Code Factory milestones are documented here. No release version or Git tag has been published.
 
+## Under review | Draft PR #1, public coverage, visual overhaul and reusable account bundles
+
+Implemented on `feat/public-coverage-and-factory-density`, not merged to `master`:
+
+- Anonymous public-visibility rechecks for omitted previously observed repositories and offline event-ID coverage reconciliation.
+- Logarithmic activity scale, daily load indicators, busiest-machine selection and stage-specific original machinery.
+- Active-day-only conveyors, moving gears/belts and reduced-motion-aware browser animation; all 18 SVGs regenerated.
+- Any-username bundle CLI with four static SVGs, public JSON and README Markdown; manual forkable workflow with temporary artefact output.
+- Local JSON import and static SVG download in the browser preview.
+- Expanded cross-platform tests and current CI evidence. See `docs/PROJECT_STATUS.md` for the latest branch freshness and checks.
+
 ## Unreleased | Public coverage and factory intensity, 18 November 2026
 
 - Audited the 1,219-to-894 public activity capture discrepancy: 457 older event IDs absent, 132 newer records, 455 missing from one omitted owned public-repository listing.

@@ -26,9 +26,11 @@ The original [17 November 2026 historical public snapshot](fixtures/adityasreeva
 
 ## Data accuracy and calibrated activity
 
+The improvements described in this section are under review in [draft PR #1](https://github.com/AdityaSreevatsaK/Code-Factory/pull/1); they are not yet part of the default branch.
+
 The first scheduled capture contained fewer observed events than the frozen historical example. An [exact public-data audit](docs/DATA_COVERAGE_AUDIT.md) traced **455 missing records to one owned repository absent from the earlier public-repository listing**. The account's public status was verified during the audit, but the reason for the earlier listing omission is not conclusively known.
 
-The collector now re-verifies previously public owned repositories **without using an authentication token** before excluding them from a new capture. It does not retain or scan repositories that are no longer publicly accessible. API failures stop publication rather than producing a misleading update.
+The collector changes in **draft PR #1** re-verify previously public owned repositories **without using an authentication token** before excluding them from a new capture. This safeguard is on the review branch, not yet on `master`. It does not retain or scan repositories that are no longer publicly accessible. API failures stop publication rather than producing a misleading update.
 
 The heatmap also uses a **calibrated logarithmic five-level activity scale** based on the year's observed peak. A single event is visually different from dozens or hundreds. Five small load indicators in each daily workshop show the corresponding day’s intensity, and busy days prioritise the two most active real repository stages while disclosing the remainder.
 
@@ -143,7 +145,12 @@ The script runs Node and Python tests, verifies all **18** committed SVGs: fourt
 | `tests/` | Node and Python regression tests, including public collector mocks |
 | `scripts/` | Cross-platform generated-asset verification |
 | `legacy/` | Preserved earlier Python factory prototype, **not** the current renderer |
-| `docs/` | Architecture, design, contract, development, agent handover, metadata and roadmap |
+| `docs/PROJECT_STATUS.md` | Dated evidence-backed implementation and PR status |
+| `docs/DATA_COVERAGE_AUDIT.md` | Historical event-ID discrepancy analysis and recovery safeguards |
+| `factory-finish.mjs` | Deterministic stage-specific machinery and active-day conveyor detailing |
+| `scripts/create-factory.mjs` | Any-username factory bundle CLI |
+| `scripts/audit-coverage.mjs` | Offline public snapshot comparison |
+| `docs/` | Architecture, design, contract, development, handover, metadata and roadmap |
 | `AGENTS.md` | **Start here for AI coding agents**, then follow `docs/AI_AGENT_HANDOVER.md` |
 | `.github/workflows/ci.yml` | Offline deterministic CI, no paid APIs or network-dependent tests |
 
@@ -152,14 +159,14 @@ The script runs Node and Python tests, verifies all **18** committed SVGs: fourt
 - Uses a 53-week Sunday-start calendar with a highlighted seven-day workshop.
 - One machine/parcel represents an observed repository and event stage on a specific day. Repeated records for the same repository and stage share a machine.
 - Maximum two distinct machines are drawn per day; a truthful overflow message reports hidden stages. All valid source records still count towards the calendar.
-- A blank day means **no observed event in the input**, not a proven absence of GitHub contributions.
+- A blank day means **no observed event in the input**, not a proven absence of GitHub contributions. The renderer accepts release records, but the built-in collector does not currently fetch releases.
 - Only the synthetic fixture is marked `SYNTHETIC DEMO`; captured activity is marked `PUBLIC GITHUB SNAPSHOT`.
 - GitHub READMEs use **still SVG files**. Optional SVG animation is designed for local browsers and is not claimed to run on GitHub.
 - Rendering is offline, deterministic and free of external images, fonts, trackers and third-party JavaScript.
 
 ## Documentation
 
-Read [Architecture](docs/ARCHITECTURE.md), [Data contract](docs/DATA_CONTRACT.md), [Design specification](docs/DESIGN_SPEC.md), [Development and testing](docs/DEVELOPMENT.md), [Security](SECURITY.md), [Contribution guide](CONTRIBUTING.md) and the [AI agent handover](docs/AI_AGENT_HANDOVER.md).
+Start with the [live project status](docs/PROJECT_STATUS.md) for default-branch versus review-branch implementation state. Read [Architecture](docs/ARCHITECTURE.md), [Data contract](docs/DATA_CONTRACT.md), [Design specification](docs/DESIGN_SPEC.md), [Development and testing](docs/DEVELOPMENT.md), [Security](SECURITY.md), [Contribution guide](CONTRIBUTING.md) and the [AI agent handover](docs/AI_AGENT_HANDOVER.md).
 
 **Project status:** active experimental prototype, not yet a released library or officially verified GitHub-contributions replacement. Public repository visibility does not itself grant a licence to reuse the code. A source licence will be chosen before inviting third-party code contributions or publishing a stable release. No automated modification of anyone's GitHub profile is performed.
 

@@ -93,11 +93,17 @@ npm run verify:exports
 
 `npm run verify:exports`: checks all **14 historical** committed SVGs against freshly generated in-memory renderer output, normalises only line endings, verifies size and absence of executable SVG content, and fails on stale art.
 
-`.\verify.ps1`: runs native Node and Python suites and invokes the exporter CLI in temporary directories to compare all 18 files. `-Regenerate` rewrites all derived images intentionally. If a fixture or renderer changes, update the corresponding assets, verify differences and never commit a partially generated gallery.
+`.\verify.ps1`: runs the complete `npm test` Node suite, Python tests and exporter CLI in temporary directories to compare all 18 files. It uses the same Node test entry point as CI. `-Regenerate` rewrites all derived images intentionally. If a fixture or renderer changes, update the corresponding assets, verify differences and never commit a partially generated gallery.
 
 ## CI
 
 The GitHub Actions workflow `.github/workflows/ci.yml` runs on pushes to `master`, pull requests and manual dispatch, on Ubuntu and Windows with Node 20 and Python 3.11. It requests **contents: read** only and does not collect live GitHub data, install npm dependencies, spend on APIs, or require a secret. The separately approved `.github/workflows/refresh-activity.yml` runs every six hours, scoped to the public account and five generated paths. CI remains read-only and offline.
+
+## State-aware development bootstrap
+
+Before a substantial change, follow `AGENTS.md`: inspect repository identity, `git status`, current branch and HEAD, recent history, staged/unstaged/untracked files, default-branch relationship, open PRs and current Actions checks. Preserve dirty work. If only GitHub API access is available, inspect live refs/trees/PRs/checks and state that local worktree status is unavailable.
+
+Use `docs/PROJECT_STATUS.md` as a dated starting point, then verify every relevant claim against current code, tests and workflows. Do not treat a green check on an older SHA or an unmerged PR as default-branch functionality.
 
 ## Suggested development loop
 
