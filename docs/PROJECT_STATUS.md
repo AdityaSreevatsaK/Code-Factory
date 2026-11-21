@@ -46,7 +46,7 @@ At the start of this audit, PR #1 was **31 commits ahead and 6 behind** `master`
 
 Before merge, update the PR branch from the current `master`, preserve its code changes, regenerate the four live SVGs using the PR branch renderer and latest snapshot, then rerun `npm test`, Python tests, both asset verifiers and Windows/Ubuntu CI. Do not copy old live SVGs over the new renderer output.
 
-The pre-documentation PR code head passed [CI run #44331190624](https://github.com/AdityaSreevatsaK/Code-Factory/actions/runs/44331190624) on Ubuntu and Windows: 62 Node tests, 21 Python tests, 14 historical exports and four live exports. Check the current PR head and latest check run before relying on this result.
+The pre-documentation PR code head passed [CI run #44331190624](https://github.com/AdityaSreevatsaK/Code-Factory/actions/runs/44331190624) on Ubuntu and Windows: 62 Node tests, 21 Python tests, 14 historical exports and four live exports. No Actions run is currently attached to the subsequent documentation and PowerShell-verifier commits. Confirm a green run on the latest PR head before merging.
 
 ## Planned, deferred and retired
 
