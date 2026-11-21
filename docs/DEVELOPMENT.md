@@ -54,7 +54,7 @@ node refresh-public-activity.mjs --username octocat --output fixtures/octocat-pu
 node calendar-factory.mjs fixtures/octocat-public-activity.json output/octocat
 ```
 
-`GITHUB_TOKEN` can be set locally to improve REST rate limits, but must never be committed. The collector validates public visibility, fails closed on partial search or network failure, and writes atomically. It does not gather GitHub's official contribution calendar or private repository data.
+`GITHUB_TOKEN` can be set locally to improve REST rate limits, but must never be committed. The collector validates public visibility, fails closed on partial search or network failure, and writes atomically. The current default-branch version does not yet recheck repositories omitted from the owner listing; see [the coverage audit](DATA_COVERAGE_AUDIT.md) and draft PR #1. It does not gather GitHub's official contribution calendar or private repository data.
 
 `--since YYYY-MM-DD` overrides the rolling one-year start. GitHub Search caps results at 1,000 per query; the collector must reject overflow rather than silently dropping records. Do not relax these safeguards to make a refresh appear successful.
 
@@ -80,6 +80,12 @@ npm run verify:exports
 ## CI
 
 The GitHub Actions workflow `.github/workflows/ci.yml` runs on pushes to `master`, pull requests and manual dispatch, on Ubuntu and Windows with Node 20 and Python 3.11. It requests **contents: read** only and does not collect live GitHub data, install npm dependencies, spend on APIs, or require a secret. The separately approved `.github/workflows/refresh-activity.yml` runs every six hours, scoped to the public account and five generated paths. CI remains read-only and offline.
+
+## State-aware development bootstrap
+
+Before a substantial change, follow the full checklist in `AGENTS.md`: inspect repository identity, `git status`, current branch and HEAD, recent history, staged/unstaged/untracked files, default-branch relationship, open PRs and current Actions checks. Preserve dirty work. If only GitHub API access is available, inspect the live tree/refs/PRs/checks and explicitly state that local worktree state is unavailable.
+
+Check `docs/PROJECT_STATUS.md`, but refresh its claims against the current implementation. Do not treat an unmerged PR, old test run or previous AI summary as default-branch functionality.
 
 ## Suggested development loop
 

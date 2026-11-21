@@ -8,14 +8,15 @@ Work related to the Code Factory renderer, public-only collector, static and ani
 
 ## Before submitting
 
-1. Read `AGENTS.md` and `docs/ARCHITECTURE.md`, `docs/DATA_CONTRACT.md`, `docs/DESIGN_SPEC.md`.
-2. Confirm that the issue is reproducible with the synthetic fixture, and ideally with the dense public snapshot.
-3. Create a focused branch from `master`; do not overwrite historical fixtures or gallery assets just to make tests pass.
-4. Add or update deterministic tests, including event source lineage and hostile-input cases where relevant.
-5. Run `npm test`, `python -m unittest discover -s tests -v`, and `npm run verify:exports`. On Windows run `.\verify.ps1`.
-6. Regenerate SVGs **only if necessary** and provide before/after screenshots or links when changing visual details.
-7. Ensure new fixtures are synthetic or genuinely public with documented provenance. No private repo data, credentials or tokens.
-8. Write a PR that states intent, scope, exact test results, visual impacts, coverage caveats and any unverified checks.
+1. Read `AGENTS.md`, `docs/PROJECT_STATUS.md`, `docs/ARCHITECTURE.md`, `docs/DATA_CONTRACT.md` and `docs/DESIGN_SPEC.md`.
+2. Before editing, inspect `git status --short --branch`, current branch/HEAD, recent commits, uncommitted diffs, open PRs and latest CI. Preserve existing work and distinguish current `master` from unmerged branches.
+3. Confirm that the issue is reproducible with the synthetic fixture, and ideally with the dense public snapshot.
+4. Create a focused branch from the current `master`; do not overwrite historical fixtures or gallery assets just to make tests pass.
+5. Add or update deterministic tests, including event source lineage and hostile-input cases where relevant.
+6. Run `npm test`, `python -m unittest discover -s tests -v`, and `npm run verify:exports`. On Windows run `.\verify.ps1`.
+7. Regenerate SVGs **only if necessary** and provide before/after screenshots or links when changing visual details.
+8. Ensure new fixtures are synthetic or genuinely public with documented provenance. No private repo data, credentials or tokens.
+9. Write a PR that states intent, scope, exact test results, visual impacts, coverage caveats and any unverified checks.
 
 ## Commit and PR style
 

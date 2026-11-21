@@ -106,7 +106,9 @@ The script runs Node and Python tests, verifies all **18** committed SVGs: fourt
 | `tests/` | Node and Python regression tests, including public collector mocks |
 | `scripts/` | Cross-platform generated-asset verification |
 | `legacy/` | Preserved earlier Python factory prototype, **not** the current renderer |
-| `docs/` | Architecture, design, contract, development, agent handover, metadata and roadmap |
+| `docs/PROJECT_STATUS.md` | Dated evidence-backed implementation and PR status |
+| `docs/DATA_COVERAGE_AUDIT.md` | Historical event-ID discrepancy analysis and proposed recovery safeguards |
+| `docs/` | Architecture, design, contract, development, handover, metadata and roadmap |
 | `AGENTS.md` | **Start here for AI coding agents**, then follow `docs/AI_AGENT_HANDOVER.md` |
 | `.github/workflows/ci.yml` | Offline deterministic CI, no paid APIs or network-dependent tests |
 
@@ -115,14 +117,14 @@ The script runs Node and Python tests, verifies all **18** committed SVGs: fourt
 - Uses a 53-week Sunday-start calendar with a highlighted seven-day workshop.
 - One machine/parcel represents an observed repository and event stage on a specific day. Repeated records for the same repository and stage share a machine.
 - Maximum two distinct machines are drawn per day; a truthful overflow message reports hidden stages. All valid source records still count towards the calendar.
-- A blank day means **no observed event in the input**, not a proven absence of GitHub contributions.
+- A blank day means **no observed event in the input**, not a proven absence of GitHub contributions. The renderer accepts release records, but the built-in collector does not currently fetch releases.
 - Only the synthetic fixture is marked `SYNTHETIC DEMO`; captured activity is marked `PUBLIC GITHUB SNAPSHOT`.
 - GitHub READMEs use **still SVG files**. Optional SVG animation is designed for local browsers and is not claimed to run on GitHub.
 - Rendering is offline, deterministic and free of external images, fonts, trackers and third-party JavaScript.
 
 ## Documentation
 
-Read [Architecture](docs/ARCHITECTURE.md), [Data contract](docs/DATA_CONTRACT.md), [Design specification](docs/DESIGN_SPEC.md), [Development and testing](docs/DEVELOPMENT.md), [Security](SECURITY.md), [Contribution guide](CONTRIBUTING.md) and the [AI agent handover](docs/AI_AGENT_HANDOVER.md).
+Start with the [live project status](docs/PROJECT_STATUS.md) for default-branch versus review-branch implementation state. Read [Architecture](docs/ARCHITECTURE.md), [Data contract](docs/DATA_CONTRACT.md), [Design specification](docs/DESIGN_SPEC.md), [Development and testing](docs/DEVELOPMENT.md), [Security](SECURITY.md), [Contribution guide](CONTRIBUTING.md) and the [AI agent handover](docs/AI_AGENT_HANDOVER.md).
 
 **Project status:** active experimental prototype, not yet a released library or officially verified GitHub-contributions replacement. Public repository visibility does not itself grant a licence to reuse the code. A source licence will be chosen before inviting third-party code contributions or publishing a stable release. No automated modification of anyone's GitHub profile is performed.
 

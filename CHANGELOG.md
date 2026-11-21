@@ -2,6 +2,18 @@
 
 All significant Code Factory milestones are documented here. No release version or Git tag has been published.
 
+## Under review | Draft PR #1, public coverage and visual/reuse improvements
+
+The following work is implemented on `feat/public-coverage-and-factory-density` but is **not part of `master`** until PR #1 is merged:
+
+- Anonymous public-visibility rechecks for previously observed repositories and offline event-ID coverage audit.
+- Logarithmic activity intensity, daily load indicators, busiest-machine selection and richer source-backed stage machinery.
+- Active-day-only conveyors, moving gears/belts and reduced-motion-aware browser motion; all 18 SVGs regenerated.
+- One-command public username bundle, manual forkable workflow, local JSON preview import and static SVG download.
+- Expanded Node/Python regression tests and Windows/Ubuntu verification.
+
+See [project status](docs/PROJECT_STATUS.md) for the branch's freshness, CI evidence and merge prerequisites.
+
 ## Unreleased | Standalone repository migration, 18 November 2026
 
 - Migrated the calendar-driven Code Factory renderer and interactive browser preview out of GitHub Activity Studio.

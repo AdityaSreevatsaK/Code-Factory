@@ -26,6 +26,10 @@ Collector protections:
 - Take `GITHUB_TOKEN` from an environment variable **only**, without logging or storing it.
 - Read-only CI runs only with committed snapshots and mocks. The separate scheduled refresh job uses the built-in GitHub token with scoped `contents: write`, fetching only public activity and committing only five generated files after verification.
 
+## Current public-coverage gap
+
+The default-branch collector currently discovers repositories from GitHub's owned-repository listing. The 18 November audit found that a previously observed, still-public repository could be omitted from that listing. PR #1 proposes a mitigation that rechecks prior repository names through anonymous metadata and scans only repositories freshly confirmed public. Until that change is merged, treat the current collector as potentially incomplete; never query private repositories or copy historical activity forward to hide a gap.
+
 ## Important known boundaries
 
 The public REST strategy is **not equivalent to GitHub's official contribution calendar**. Do not represent blanks as authenticated zeroes, PR merges as deployments, or observed event units as GitHub's contribution totals.

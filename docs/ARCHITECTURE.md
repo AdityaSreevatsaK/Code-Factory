@@ -64,6 +64,8 @@ The public collector uses GitHub REST:
 - `GET /users/<login>/repos?type=owner` to discover owned repositories, then filters the returned records to `private === false`, `visibility === "public"` and exact login ownership.
 - `GET /repos/<owner>/<repo>/commits` for author, start/end date and the **public default branch only**.
 
+The renderer accepts a `release` event in schema v1, but the built-in collector does not currently call the releases API. Do not describe release collection as implemented.
+
 It handles GitHub search limits, page boundaries, malformed responses and API failures. A snapshot is written first to a temporary file and atomically renamed only when the full collection succeeds. A token can be supplied via environment variable to increase rate limits, but is not saved or exposed.
 
 ### Exclusions and coverage limits
