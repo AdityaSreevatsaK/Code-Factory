@@ -13,7 +13,7 @@ Work related to the Code Factory renderer, public-only collector, static and ani
 3. Confirm that the issue is reproducible with the synthetic fixture, and ideally with the dense public snapshot.
 4. Create a focused branch from the current `master`; do not overwrite historical fixtures or gallery assets just to make tests pass.
 5. Add or update deterministic tests, including event source lineage and hostile-input cases where relevant.
-6. Run `npm test`, `python -m unittest discover -s tests -v`, and `npm run verify:exports`. On Windows run `.\verify.ps1`.
+6. Run `npm test`, `python -m unittest discover -s tests -v`, `npm run verify:exports` and `npm run verify:live`. On Windows run `.\verify.ps1`.
 7. Regenerate SVGs **only if necessary** and provide before/after screenshots or links when changing visual details.
 8. Ensure new fixtures are synthetic or genuinely public with documented provenance. No private repo data, credentials or tokens.
 9. Write a PR that states intent, scope, exact test results, visual impacts, coverage caveats and any unverified checks.

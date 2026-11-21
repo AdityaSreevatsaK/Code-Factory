@@ -54,7 +54,7 @@ node refresh-public-activity.mjs --username octocat --output fixtures/octocat-pu
 node calendar-factory.mjs fixtures/octocat-public-activity.json output/octocat
 ```
 
-`GITHUB_TOKEN` can be set locally to improve REST rate limits, but must never be committed. The collector validates public visibility, fails closed on partial search or network failure, and writes atomically. The current default-branch version does not yet recheck repositories omitted from the owner listing; see [the coverage audit](DATA_COVERAGE_AUDIT.md) and draft PR #1. It does not gather GitHub's official contribution calendar or private repository data.
+`GITHUB_TOKEN` can be set locally to improve REST rate limits, but must never be committed. The scheduled workflow supplies GitHub's built-in token through this environment variable and sets `CODE_FACTORY_LIVE_USERNAME` to the fixed showcase account; the live generator checks that the snapshot belongs to that account. The collector validates public visibility, fails closed on partial search or network failure, and writes atomically. The current default-branch version does not yet recheck repositories omitted from the owner listing; see [the coverage audit](DATA_COVERAGE_AUDIT.md) and draft PR #1. It does not gather GitHub's official contribution calendar or private repository data.
 
 `--since YYYY-MM-DD` overrides the rolling one-year start. GitHub Search caps results at 1,000 per query; the collector must reject overflow rather than silently dropping records. Do not relax these safeguards to make a refresh appear successful.
 

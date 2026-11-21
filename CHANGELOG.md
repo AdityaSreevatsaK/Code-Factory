@@ -14,6 +14,14 @@ The following work is implemented on `feat/public-coverage-and-factory-density` 
 
 See [project status](docs/PROJECT_STATUS.md) for the branch's freshness, CI evidence and merge prerequisites.
 
+## Unreleased | State-aware documentation, 21 November 2026
+
+- Added a mandatory live Git/worktree/branch/PR/CI inspection protocol for AI agents, with evidence-based implementation-state labels.
+- Added a dated project-status matrix distinguishing `master`, draft PR #1, planned work, deferred work and retired code.
+- Updated the architecture, data contract, development, security, contributor, roadmap and handover documents against the actual repository and workflows.
+- Recorded the public-activity coverage discrepancy, known collector limits, historical technical failures and branch-freshness requirements.
+- Kept PR #1 unmerged and made no licence, release, profile or visibility changes.
+
 ## Unreleased | Standalone repository migration, 18 November 2026
 
 - Migrated the calendar-driven Code Factory renderer and interactive browser preview out of GitHub Activity Studio.

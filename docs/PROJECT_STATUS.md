@@ -42,7 +42,7 @@ The live record count is the number of observed event/stage records in that snap
 
 ### PR branch freshness
 
-At the start of this audit, PR #1 was **31 commits ahead and 6 behind** `master`. The six commits on `master` since the common base were scheduled refreshes that changed only `data/live-public-activity.json` and the four `exports/live-*-still.svg` files. The PR branch still carries the earlier snapshot from `2026-11-18T09:34:29Z` with **894 records across 32 repositories**, while `master` carries the newer 21 November capture with 2,178 records across 41 repositories.
+At the start of this audit, PR #1 was **31 commits ahead and 6 behind** `master`. Those six commits since the common base were scheduled refreshes that changed only `data/live-public-activity.json` and the four `exports/live-*-still.svg` files. This documentation audit then added a docs-only commit to `master`. Treat the ahead/behind count as a historical checkpoint and inspect the live comparison before merging. The PR branch still carries the earlier snapshot from `2026-11-18T09:34:29Z` with **894 records across 32 repositories**, while `master` carries the newer 21 November capture with 2,178 records across 41 repositories.
 
 Before merge, update the PR branch from the current `master`, preserve its code changes, regenerate the four live SVGs using the PR branch renderer and latest snapshot, then rerun `npm test`, Python tests, both asset verifiers and Windows/Ubuntu CI. Do not copy old live SVGs over the new renderer output.
 

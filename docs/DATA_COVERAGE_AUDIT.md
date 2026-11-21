@@ -37,7 +37,7 @@ The live image used fewer observed source records, making many active days appea
 2. If the public-owner repository listing omits a known owned repository, the collector checks its GitHub repository metadata **without credentials**. Only an explicitly public repository owned by the requested username may then be scanned.
 3. An unavailable/private repository is excluded from the next snapshot. No private name or historical event is retained in the generated public output. Public API errors fail the refresh before publication.
 4. The refresh workflow passes the frozen historical snapshot as a baseline, alongside the prior live snapshot. The baseline is **not** copied into new output; it is merely a list of candidates requiring independent public verification.
-5. The offline `npm run audit:coverage` command reconciles old/new event IDs and highlights omitted repository scans for investigation.
+5. The review branch adds an offline `npm run audit:coverage` command to reconcile event IDs and highlight omitted repository scans. This script is not present on `master` until PR #1 merges.
 6. Automated tests cover an omitted-but-still-public repository, an unavailable/private repository, a public metadata API failure, and deterministic ordering and data lineage.
 
 ### Remaining limitations
@@ -50,7 +50,7 @@ The live image used fewer observed source records, making many active days appea
 - No previous-public repository may be scanned merely because it appears in a historical fixture. It must pass a fresh, **unauthenticated public-visibility verification**.
 - A future capture may still contain fewer records for legitimate reasons. The audit identifies where counts changed; it cannot assert which unobserved events occurred.
 
-Re-run the report locally:
+Re-run the report on `feat/public-coverage-and-factory-density`:
 
 ```powershell
 npm run audit:coverage
@@ -58,5 +58,7 @@ npm test
 npm run verify:exports
 npm run verify:live
 ```
+
+The audit command is not available on the current default branch until PR #1 is merged.
 
 On the proposed branch, expect the four live SVG assets and fourteen historical assets to change due to the separate, intentionally improved adaptive heatmap renderer. Keep the repository changes in a reviewable pull request, without modifying any unrelated GitHub projects or the owner's profile.
