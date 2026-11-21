@@ -2,7 +2,7 @@
 .SYNOPSIS
   Validate Code Factory rendering, exact committed SVG exports and test suites.
 .DESCRIPTION
-  Requires Node.js 20+ and Python 3.11+. No npm, tokens or network.
+  Requires Node.js 20+ and Python 3.11+. No npm install, tokens or network.
   Leaves committed assets unchanged unless -Regenerate is explicitly supplied.
 .EXAMPLE
   .\verify.ps1
