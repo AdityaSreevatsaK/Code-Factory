@@ -18,7 +18,7 @@ Implemented on `feat/public-coverage-and-factory-density`, not merged to `master
 - Active-day-only conveyors, moving gears/belts and reduced-motion-aware browser animation; all 18 SVGs regenerated.
 - Any-username bundle CLI with four static SVGs, public JSON and README Markdown; manual forkable workflow with temporary artefact output.
 - Local JSON import and static SVG download in the browser preview.
-- Expanded cross-platform tests and current CI evidence. See `docs/PROJECT_STATUS.md` for the latest branch freshness and checks.
+- Expanded cross-platform tests. The pre-documentation code head passed CI run #44331190624; the current documentation and PowerShell-verifier changes still require a fresh check run. See `docs/PROJECT_STATUS.md`.
 
 ## Unreleased | Public coverage and factory intensity, 18 November 2026
 
