@@ -1,7 +1,7 @@
 {
   "schema_version": "1",
   "source": "github",
-  "generated_at": "2026-11-23T23:56:33Z",
+  "generated_at": "2026-11-24T09:57:44Z",
   "user": {
     "login": "AdityaSreevatsaK",
     "url": "https://github.com/AdityaSreevatsaK"
@@ -18681,8 +18681,8 @@
   ],
   "coverage": {
     "kind": "public-observed-activity",
-    "start_utc": "2025-11-23T00:00:00.000Z",
-    "end_utc": "2026-11-23T23:56:33Z",
+    "start_utc": "2025-11-24T00:00:00.000Z",
+    "end_utc": "2026-11-24T09:57:44Z",
     "search_totals": {
       "pr": 601,
       "issue": 129
