@@ -1,7 +1,7 @@
 {
   "schema_version": "1",
   "source": "github",
-  "generated_at": "2026-11-24T22:29:31Z",
+  "generated_at": "2026-11-25T08:41:15Z",
   "user": {
     "login": "AdityaSreevatsaK",
     "url": "https://github.com/AdityaSreevatsaK"
@@ -214,14 +214,6 @@
     }
   ],
   "activity": [
-    {
-      "id": "issue-opened:rossjrw/rossjrw#4135",
-      "kind": "issue_opened",
-      "repo_full_name": "rossjrw/rossjrw",
-      "occurred_at": "2025-11-24T16:28:54Z",
-      "url": "https://github.com/rossjrw/rossjrw/issues/4135",
-      "count": 1
-    },
     {
       "id": "commit:AdityaSreevatsaK/Agentic-Assembly:632633a74c39ac93e293e8179edb2799b86097f6",
       "kind": "commit",
@@ -19001,11 +18993,11 @@
   ],
   "coverage": {
     "kind": "public-observed-activity",
-    "start_utc": "2025-11-24T00:00:00.000Z",
-    "end_utc": "2026-11-24T22:29:31Z",
+    "start_utc": "2025-11-25T00:00:00.000Z",
+    "end_utc": "2026-11-25T08:41:15Z",
     "search_totals": {
       "pr": 607,
-      "issue": 130
+      "issue": 129
     },
     "commit_repo_scan": {
       "first_page_repositories": 42,
