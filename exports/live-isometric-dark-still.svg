@@ -444,6 +444,7 @@
 <g><title>2026-11-25: 0 recorded units across 0 events</title><rect x="1110.80" y="154.60" width="11.3" height="11.3" rx="2" fill="#29454b" /></g>
 <g><title>2026-11-26: 24 recorded units across 24 events · pr_opened, commit, pr_merged</title><rect x="1110.80" y="166.80" width="11.3" height="11.3" rx="2" fill="#c9f3ae" /></g>
 <g><title>2026-11-27: 0 recorded units across 0 events</title><rect x="1110.80" y="179.00" width="11.3" height="11.3" rx="2" fill="#29454b" /></g>
+<g><title>2026-11-28: 0 recorded units across 0 events</title><rect x="1110.80" y="191.20" width="11.3" height="11.3" rx="2" fill="#29454b" /></g>
 <g data-week-index="52" role="button" tabindex="0" aria-label="Week beginning 2026-11-22: 90 recorded events, 90 units" aria-pressed="true"><title>Week beginning 2026-11-22: 90 events</title><rect x="1108.7" y="116" width="15.600000000000001" height="86.39999999999999" rx="3" fill="transparent" /></g>
 <text x="137" y="139.2" font-size="10" fill="#b8cbd0" font-family="system-ui,Segoe UI,sans-serif" text-anchor="end">Mon</text>
 <text x="137" y="163.6" font-size="10" fill="#b8cbd0" font-family="system-ui,Segoe UI,sans-serif" text-anchor="end">Wed</text>
@@ -540,11 +541,11 @@
 <path d="M1009 358l28 9 28 -9 28 9 28 -9" fill="none" stroke="#678893" stroke-opacity=".18" stroke-width="2"/>
 <rect x="1010" y="263" width="12" height="12" rx="3" fill="#29454b" />
 <text x="1027" y="273" font-size="12" fill="#fbefd9" font-family="system-ui,Segoe UI,sans-serif" font-weight="850">SAT 28</text>
-<text x="1147" y="272" font-size="9" fill="#b8cbd0" font-family="system-ui,Segoe UI,sans-serif" text-anchor="end">FUTURE</text>
+<text x="1147" y="272" font-size="9" fill="#b8cbd0" font-family="system-ui,Segoe UI,sans-serif" text-anchor="end">0 UNITS</text>
 <path d="M1080 279L1080 292" fill="none" stroke="#42606c" stroke-width="2" />
 <rect x="1059" y="304" width="42" height="28" rx="4" fill="#163441" stroke="#42606c" stroke-dasharray="3 3"/>
 <path d="M1068 319L1092 319" fill="none" stroke="#678893" stroke-width="2" />
-<text x="1080" y="351" font-size="10" fill="#b8cbd0" font-family="system-ui,Segoe UI,sans-serif" text-anchor="middle" font-weight="700">NOT YET RECORDED</text>
+<text x="1080" y="351" font-size="10" fill="#b8cbd0" font-family="system-ui,Segoe UI,sans-serif" text-anchor="middle" font-weight="700">IDLE LANE</text>
 </g>
 <path d="M47 378L1155 378" fill="none" stroke="#678893" stroke-width="4" stroke-linecap="round"/>
 <rect x="115" y="374" width="10" height="8" rx="2" fill="#42606c" />
